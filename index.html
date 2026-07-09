@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shifl Ops Training — DO to Termination</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0E1B2A;         /* harbor navy */
+  --steel:#3B4856;       /* container steel */
+  --muted:#6B7885;
+  --fog:#F2F5F7;         /* cool page bg */
+  --card:#FFFFFF;
+  --line:#D9E0E5;
+  --orange:#F05A1A;      /* container orange */
+  --orange-soft:#FDE8DD;
+  --green:#1E8E5A;
+  --green-soft:#E2F3EA;
+  --red:#C93A2B;
+  --red-soft:#FBE7E4;
+  --amber:#B97A0A;
+  --amber-soft:#FBF0DA;
+  --radius:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Barlow',system-ui,sans-serif;
+  background:var(--fog);
+  color:var(--ink);
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.mono{font-family:'IBM Plex Mono',monospace}
+
+/* ---------- header ---------- */
+header{
+  background:var(--ink);
+  color:#fff;
+  padding:18px 24px 16px;
+  position:sticky;top:0;z-index:50;
+  border-bottom:4px solid var(--orange);
+}
+.hd-inner{max-width:960px;margin:0 auto;display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.hd-brand{font-family:'Barlow Condensed';font-weight:700;font-size:20px;letter-spacing:.12em;text-transform:uppercase}
+.hd-brand span{color:var(--orange)}
+.hd-title{font-family:'IBM Plex Mono';font-size:12px;color:#9FB0C0;letter-spacing:.04em}
+.hd-progress{height:4px;background:rgba(255,255,255,.15);border-radius:2px;margin-top:12px;max-width:960px;margin-left:auto;margin-right:auto;overflow:hidden}
+.hd-progress i{display:block;height:100%;width:0%;background:var(--orange);transition:width .35s ease}
+
+/* ---------- tracker (signature) ---------- */
+.tracker{
+  max-width:960px;margin:26px auto 0;padding:0 24px;
+}
+.tracker-box{
+  background:var(--ink);
+  border-radius:var(--radius);
+  padding:22px 22px 16px;
+  color:#fff;
+  position:relative;
+  overflow:hidden;
+}
+.tracker-label{font-family:'IBM Plex Mono';font-size:11px;color:#8DA0B3;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;display:flex;justify-content:space-between}
+.route{position:relative;height:70px}
+.route-line{position:absolute;left:4%;right:4%;top:44px;height:3px;background:#2B3B4D;border-radius:2px}
+.route-line i{display:block;height:100%;width:0%;background:var(--orange);border-radius:2px;transition:width .5s ease}
+.node{position:absolute;top:36px;width:18px;height:18px;border-radius:50%;background:#2B3B4D;border:3px solid var(--ink);transform:translateX(-50%);transition:background .3s}
+.node.on{background:var(--orange)}
+.node.done{background:#fff}
+.node-lbl{position:absolute;top:62px;transform:translateX(-50%);font-family:'Barlow Condensed';font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#8DA0B3;white-space:nowrap;transition:color .3s}
+.node-lbl.on{color:#fff}
+.box-icon{
+  position:absolute;top:8px;transform:translateX(-50%);
+  transition:left .6s cubic-bezier(.4,0,.2,1);
+  text-align:center;
+}
+.box-icon svg{display:block;margin:0 auto}
+.box-id{font-family:'IBM Plex Mono';font-size:9px;color:var(--orange);letter-spacing:.05em;margin-top:1px}
+@media (prefers-reduced-motion: reduce){
+  .box-icon,.route-line i,.hd-progress i{transition:none}
+}
+
+/* ---------- clocks ---------- */
+.clocks{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.clock{
+  flex:1;min-width:150px;
+  border:1px solid #2B3B4D;border-radius:8px;
+  padding:8px 12px;
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+}
+.clock b{font-family:'Barlow Condensed';font-weight:600;font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:#B9C6D2}
+.clock .st{font-family:'IBM Plex Mono';font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:20px}
+.st.idle{background:#233245;color:#7C90A3}
+.st.risk{background:var(--amber-soft);color:var(--amber)}
+.st.run{background:var(--red-soft);color:var(--red)}
+.st.stop{background:var(--green-soft);color:var(--green)}
+
+/* ---------- steps ---------- */
+main{max-width:960px;margin:0 auto;padding:26px 24px 80px}
+.step{display:none;animation:fade .3s ease}
+.step.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.step{animation:none}}
+.eyebrow{font-family:'IBM Plex Mono';font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);margin-bottom:6px}
+h1{font-family:'Barlow Condensed';font-weight:700;font-size:38px;letter-spacing:.01em;line-height:1.1;text-transform:uppercase;margin-bottom:14px}
+h2{font-family:'Barlow Condensed';font-weight:600;font-size:22px;letter-spacing:.02em;text-transform:uppercase;margin:26px 0 10px}
+p{margin-bottom:12px;color:var(--steel);max-width:70ch}
+p strong{color:var(--ink)}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:22px;margin-bottom:16px;
+}
+.callout{
+  border-left:4px solid var(--orange);
+  background:var(--orange-soft);
+  border-radius:0 8px 8px 0;
+  padding:14px 16px;margin:16px 0;
+}
+.callout.green{border-color:var(--green);background:var(--green-soft)}
+.callout.red{border-color:var(--red);background:var(--red-soft)}
+.callout b{font-family:'Barlow Condensed';font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:14px;display:block;margin-bottom:4px}
+.callout p{margin:0;color:var(--ink);font-size:15px}
+
+/* checklist */
+.check{list-style:none;margin:10px 0}
+.check li{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:11px 12px;border:1px solid var(--line);border-radius:8px;margin-bottom:8px;
+  background:#fff;cursor:pointer;transition:border-color .15s,background .15s;
+  color:var(--steel);font-size:15px;
+}
+.check li:hover{border-color:var(--orange)}
+.check li.done{background:var(--green-soft);border-color:var(--green);color:var(--ink)}
+.check .tick{
+  flex:none;width:20px;height:20px;border:2px solid var(--muted);border-radius:5px;margin-top:1px;
+  display:grid;place-items:center;font-size:13px;color:#fff;
+}
+.check li.done .tick{background:var(--green);border-color:var(--green)}
+.check li .tick::after{content:''}
+.check li.done .tick::after{content:'✓'}
+.check b{color:var(--ink)}
+
+/* data table */
+table{width:100%;border-collapse:collapse;font-size:14px;margin:10px 0}
+th{font-family:'Barlow Condensed';font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:13px;text-align:left;color:var(--muted);border-bottom:2px solid var(--ink);padding:8px 10px}
+td{border-bottom:1px solid var(--line);padding:9px 10px;color:var(--steel);vertical-align:top}
+td:first-child{color:var(--ink);font-weight:500}
+
+/* audio player */
+.player{
+  display:flex;align-items:center;gap:14px;
+  background:var(--ink);border-radius:var(--radius);
+  padding:12px 16px;margin-bottom:16px;
+}
+.p-btn{
+  flex:none;width:44px;height:44px;border-radius:50%;
+  background:var(--orange);color:#fff;border:none;cursor:pointer;
+  display:grid;place-items:center;font-size:16px;padding:0;
+}
+.p-btn:hover{background:#D84D12}
+.p-meta{flex:1;min-width:0}
+.p-lbl{font-family:'Barlow Condensed';font-weight:600;font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:#fff}
+.p-sub{font-family:'IBM Plex Mono';font-size:10px;color:#8DA0B3;letter-spacing:.05em;text-transform:uppercase}
+.p-track{height:4px;background:#2B3B4D;border-radius:2px;margin-top:7px;cursor:pointer;position:relative}
+.p-track i{display:block;height:100%;width:0%;background:var(--orange);border-radius:2px}
+.p-time{font-family:'IBM Plex Mono';font-size:11px;color:#8DA0B3;flex:none;min-width:76px;text-align:right}
+
+/* nav */
+.nav{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:22px;
+}
+button{
+  font-family:'Barlow Condensed';font-weight:600;font-size:16px;letter-spacing:.08em;text-transform:uppercase;
+  border:none;border-radius:8px;padding:12px 26px;cursor:pointer;transition:transform .1s,background .15s;
+}
+button:active{transform:scale(.98)}
+.btn-next{background:var(--orange);color:#fff}
+.btn-next:hover{background:#D84D12}
+.btn-back{background:transparent;color:var(--muted);border:1px solid var(--line)}
+.btn-back:hover{color:var(--ink);border-color:var(--muted)}
+.step-count{font-family:'IBM Plex Mono';font-size:12px;color:var(--muted)}
+
+/* quiz */
+.q{margin-bottom:26px}
+.q-title{font-weight:600;color:var(--ink);margin-bottom:10px;font-size:16px}
+.opt{
+  display:block;width:100%;text-align:left;
+  font-family:'Barlow';font-weight:400;font-size:15px;text-transform:none;letter-spacing:0;
+  background:#fff;border:1px solid var(--line);border-radius:8px;padding:11px 14px;margin-bottom:8px;color:var(--steel);
+}
+.opt:hover{border-color:var(--orange)}
+.opt.correct{background:var(--green-soft);border-color:var(--green);color:var(--ink)}
+.opt.wrong{background:var(--red-soft);border-color:var(--red);color:var(--ink)}
+.opt:disabled{cursor:default}
+.q-fb{font-size:14px;margin-top:4px;display:none;padding:10px 12px;border-radius:8px}
+.q-fb.show{display:block}
+.q-fb.good{background:var(--green-soft);color:var(--green)}
+.q-fb.bad{background:var(--red-soft);color:var(--red)}
+
+/* completion */
+.score-big{font-family:'Barlow Condensed';font-weight:700;font-size:64px;color:var(--orange);line-height:1}
+.badge{
+  display:inline-block;font-family:'IBM Plex Mono';font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--green-soft);color:var(--green);padding:6px 14px;border-radius:20px;margin-bottom:16px;
+}
+
+footer{max-width:960px;margin:0 auto;padding:0 24px 40px;font-family:'IBM Plex Mono';font-size:11px;color:var(--muted)}
+
+@media (max-width:640px){
+  h1{font-size:28px}
+  .node-lbl{font-size:10px}
+  .clock{min-width:100%}
+  .tracker,.hd-inner,main{padding-left:16px;padding-right:16px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hd-inner">
+    <div class="hd-brand">SHIFL <span>/</span> OPS TRAINING</div>
+    <div class="hd-title">MODULE 02 · DELIVERY ORDER → CONTAINER TERMINATION</div>
+  </div>
+  <div class="hd-progress"><i id="progBar"></i></div>
+</header>
+
+<div class="tracker">
+  <div class="tracker-box">
+    <div class="tracker-label"><span>Container position</span><span class="mono" id="stageTag">STAGE 0 / 8</span></div>
+    <div class="route">
+      <div class="route-line"><i id="routeFill"></i></div>
+      <div class="node" style="left:4%"  data-n="0"></div>
+      <div class="node" style="left:28%" data-n="1"></div>
+      <div class="node" style="left:52%" data-n="2"></div>
+      <div class="node" style="left:76%" data-n="3"></div>
+      <div class="node" style="left:96%" data-n="4"></div>
+      <div class="node-lbl" style="left:4%"  data-n="0">DO Sent</div>
+      <div class="node-lbl" style="left:28%" data-n="1">At Terminal</div>
+      <div class="node-lbl" style="left:52%" data-n="2">On the Street</div>
+      <div class="node-lbl" style="left:76%" data-n="3">Delivered</div>
+      <div class="node-lbl" style="left:96%" data-n="4">Terminated</div>
+      <div class="box-icon" id="boxIcon" style="left:4%">
+        <svg width="34" height="22" viewBox="0 0 34 22"><rect x="1" y="1" width="32" height="20" rx="2" fill="#F05A1A"/><line x1="6" y1="3" x2="6" y2="19" stroke="#C24310" stroke-width="1.6"/><line x1="11" y1="3" x2="11" y2="19" stroke="#C24310" stroke-width="1.6"/><line x1="16" y1="3" x2="16" y2="19" stroke="#C24310" stroke-width="1.6"/><line x1="21" y1="3" x2="21" y2="19" stroke="#C24310" stroke-width="1.6"/><line x1="26" y1="3" x2="26" y2="19" stroke="#C24310" stroke-width="1.6"/></svg>
+        <div class="box-id">SHFU 402118 6</div>
+      </div>
+    </div>
+    <div class="clocks">
+      <div class="clock"><b>Demurrage</b><span class="st idle" id="ckDem">Idle</span></div>
+      <div class="clock"><b>Driver Detention</b><span class="st idle" id="ckDet">Idle</span></div>
+      <div class="clock"><b>Per Diem</b><span class="st idle" id="ckPd">Idle</span></div>
+    </div>
+  </div>
+</div>
+
+<main id="steps"></main>
+
+<footer>SHIFL FREIGHT BROKERAGE · DRAYAGE OPERATIONS · INTERNAL TRAINING USE ONLY</footer>
+
+<script>
+const STEPS = [
+{ pos:'4%', node:0, clocks:['idle','idle','idle'], html:`
+<div class="eyebrow">Module 02 · Introduction</div>
+<h1>From DO to Termination</h1>
+<div class="card">
+<p><strong>What this module covers.</strong> The moment we send a Delivery Order (DO) to a drayage carrier, Shifl's job is not done — it changes. From that point until the empty container is terminated back at the port, we are managing three running cost clocks, a chain of appointments, and a paper trail that has to close cleanly.</p>
+<p>By the end of this walkthrough you'll be able to follow one container — <span class="mono">SHFU 402118 6</span> — through every stage in the tracker above, and know exactly what Ops is responsible for at each one.</p>
+<div class="callout"><b>The three clocks</b><p>Watch the panel above as you move through the module. <strong>Demurrage</strong> (terminal charges the cargo owner for the box sitting at the port), <strong>driver detention</strong> (carrier charges for wait time at delivery), and <strong>per diem</strong> (steamship line charges for keeping their container out) each start and stop at different events. Knowing those trigger events is 80% of drayage ops.</p></div>
+<p>Click any checklist item as you go — it's how you'll work in real life, so practice it here.</p>
+</div>`},
+
+{ pos:'4%', node:0, clocks:['idle','idle','idle'], html:`
+<div class="eyebrow">Stage 1 · Dispatch</div>
+<h1>DO Sent — Get a Real Confirmation</h1>
+<div class="card">
+<p>A sent DO is not an accepted DO. The carrier must <strong>confirm acceptance in writing</strong> (email or portal). Until they do, assume the container is uncovered and keep your backup carrier options warm.</p>
+<h2>Verify the DO against the booking</h2>
+<ul class="check">
+<li><span class="tick"></span><span><b>Container # &amp; size/type</b> — matches the arrival notice (e.g. 40HC vs 40STD changes chassis and legal weight math)</span></li>
+<li><span class="tick"></span><span><b>MBL # and steamship line</b> — the SSL determines the empty return location later</span></li>
+<li><span class="tick"></span><span><b>Terminal</b> — which pier the vessel discharges at (APM, Maher, PNCT, GCT Bayonne, etc.)</span></li>
+<li><span class="tick"></span><span><b>Delivery address, hours &amp; contact</b> — and whether it's a live unload or a drop</span></li>
+<li><span class="tick"></span><span><b>Weight</b> — flag anything near or over legal road weight; overweight needs a tri-axle chassis and OW permit pricing</span></li>
+<li><span class="tick"></span><span><b>Special handling</b> — hazmat, reefer (genset?), residential, liftgate, appointment-only warehouse</span></li>
+</ul>
+<div class="callout"><b>Ops watchpoint</b><p>Most expensive mistakes in drayage are made in the first ten minutes — a wrong terminal, a missed overweight flag, or an unconfirmed carrier. Slow down here to move fast later.</p></div>
+</div>`},
+
+{ pos:'28%', node:1, clocks:['risk','idle','idle'], html:`
+<div class="eyebrow">Stage 2 · At Terminal</div>
+<h1>Availability &amp; Holds</h1>
+<div class="card">
+<p>Once the vessel discharges, the container shows up in the terminal's system — but <strong>discharged ≠ available</strong>. A container can only be picked up when every hold on it is released.</p>
+<h2>The holds you'll see</h2>
+<table>
+<tr><th>Hold</th><th>Who releases it</th><th>What Ops does</th></tr>
+<tr><td>Customs hold</td><td>CBP, via the customs broker</td><td>Confirm entry is filed and released; chase the broker, not the terminal</td></tr>
+<tr><td>Freight hold</td><td>Steamship line</td><td>Ocean freight/fees unpaid or original BL not surrendered — escalate to the forwarder/customer</td></tr>
+<tr><td>Terminal / demurrage hold</td><td>Terminal</td><td>Demurrage owed must be paid (usually online) before the gate will release</td></tr>
+<tr><td>USDA / exam hold</td><td>Government agency</td><td>Nothing moves until the exam clears — reset customer expectations early</td></tr>
+</table>
+<div class="callout red"><b>Never dispatch on a hold</b><p>If a driver shows up for a container with any active hold, the trip is wasted — and the carrier will bill a dry run. Check availability the morning of pickup, not just the day before. Holds can reappear.</p></div>
+<p>Track availability daily on the terminal portal or a tracking tool, and log the <strong>Last Free Day (LFD)</strong> the moment it posts. LFD drives everything in the next stage.</p>
+</div>`},
+
+{ pos:'28%', node:1, clocks:['risk','idle','idle'], html:`
+<div class="eyebrow">Stage 3 · At Terminal</div>
+<h1>LFD, Demurrage &amp; the Pre-Pull Call</h1>
+<div class="card">
+<p>Every import container gets a few free days at the terminal after discharge. The last of them is the <strong>Last Free Day (LFD)</strong>. From the next day forward, the terminal charges <strong>demurrage</strong> — often $150–$375+ per day, escalating the longer it sits.</p>
+<h2>When delivery can't happen before LFD</h2>
+<p>If the consignee can't receive the box before demurrage starts, we have a decision to make:</p>
+<table>
+<tr><th>Option</th><th>What it is</th><th>Typical cost logic</th></tr>
+<tr><td>Eat demurrage</td><td>Leave the box at the terminal past LFD</td><td>Rarely the right answer — daily rate escalates and the box can get buried</td></tr>
+<tr><td>Pre-pull</td><td>Pull the container before LFD and stage it in the carrier's yard</td><td>Pre-pull fee (~$150) + yard storage (~$40/day) + chassis days — usually far cheaper than demurrage</td></tr>
+<tr><td>Pre-pull + early delivery push</td><td>Pre-pull and pressure the consignee for the first open dock</td><td>Best of both — minimizes storage and chassis days</td></tr>
+</table>
+<div class="callout"><b>Ops watchpoint</b><p>Do the math out loud with the customer <em>before</em> LFD, not after. A pre-pull authorized on the last free day is a win; the same email one day later is an apology plus a demurrage invoice.</p></div>
+<div class="callout green"><b>Remember the trade</b><p>A pre-pull stops the demurrage clock — but it starts chassis and yard-storage charges, and the per diem free-time clock keeps ticking regardless. You're trading one clock for cheaper ones, not stopping time.</p></div>
+</div>`},
+
+{ pos:'28%', node:1, clocks:['risk','idle','idle'], html:`
+<div class="eyebrow">Stage 4 · At Terminal</div>
+<h1>Appointments — Get the Confirmation</h1>
+<div class="card">
+<p>With the box released and LFD under control, the carrier books the pickup. <strong>We are the broker — we don't book terminal appointments, the carrier does.</strong> Our job is to make sure it actually happened and have proof of it in the file.</p>
+<h2>Confirm the carrier is booked</h2>
+<ul class="check">
+<li><span class="tick"></span><span><b>Ask if an appointment is needed</b> — most NY/NJ terminals run appointment systems; confirm with the carrier whether this terminal/move requires one</span></li>
+<li><span class="tick"></span><span><b>Get the confirmation in writing</b> — appointment number, date, and time window, sent by the carrier (email or portal screenshot)</span></li>
+<li><span class="tick"></span><span><b>Check it against LFD</b> — the appointment must land on or before the Last Free Day, or we're back in the pre-pull conversation</span></li>
+<li><span class="tick"></span><span><b>Check it against delivery</b> — pickup timing has to work with the consignee's receiving window; a morning pickup for an afternoon delivery appointment, not the other way around</span></li>
+</ul>
+<div class="callout"><b>Ops watchpoint</b><p>"We'll get an appointment" is not an appointment. Slots at busy terminals go fast — if the carrier can't show you an appointment number, treat the pickup as unbooked and escalate early. Finding out at 4 PM the day before LFD is how demurrage happens.</p></div>
+</div>`},
+
+{ pos:'52%', node:2, clocks:['stop','idle','run'], html:`
+<div class="eyebrow">Stage 5 · On the Street</div>
+<h1>Outgate — The Clocks Flip</h1>
+<div class="card">
+<p>The driver ingates, the terminal mounts the box, and the truck <strong>outgates</strong>. That timestamp on the interchange is one of the most important moments in the whole move:</p>
+<div class="callout green"><b>Demurrage stops</b><p>The container has left terminal property. Whatever demurrage accrued through the outgate date is final.</p></div>
+<div class="callout red"><b>Per diem exposure begins</b><p>The steamship line's container is now "out." The SSL grants a few free days (varies by line and contract); after that, per diem runs daily — typically $85–$150+/day — until the empty is terminated. From outgate on, every day matters.</p></div>
+<h2>What Ops does on pickup day</h2>
+<ul class="check">
+<li><span class="tick"></span><span><b>Confirm outgate</b> — get the outgate time from the carrier or terminal system; update the customer proactively</span></li>
+<li><span class="tick"></span><span><b>Check the interchange (EIR)</b> — driver notes any existing damage to container/chassis at the gate; photos protect everyone later</span></li>
+<li><span class="tick"></span><span><b>ETA to consignee</b> — confirm the driver makes the delivery appointment; if not, call the warehouse before they call you</span></li>
+</ul>
+</div>`},
+
+{ pos:'76%', node:3, clocks:['stop','run','run'], html:`
+<div class="eyebrow">Stage 6 · Delivered</div>
+<h1>Delivery — Live Unload vs Drop</h1>
+<div class="card">
+<h2>Live unload</h2>
+<p>The driver waits while the consignee unloads. Free time is typically <strong>1–2 hours</strong>; after that, driver detention bills by the hour (e.g. $85/hr after 2 free hours). Ops should get <strong>in/out times from the driver in writing</strong> — arrival at the door, unload start, departure. No timestamps, no defensible detention invoice.</p>
+<h2>Drop &amp; pick</h2>
+<p>The driver drops the loaded container (on the chassis) at the consignee and leaves. No detention — but now the box and chassis sit there for days:</p>
+<div class="callout"><b>What keeps running on a drop</b><p><strong>Chassis rental</strong> (daily) and the <strong>per diem free-time clock</strong> both keep going while the container sits at the warehouse. A "free" drop that sits five days can cost more than paid detention. Agree the pickup date for the empty at the time of the drop, and diarize it.</p></div>
+<h2>Either way, before the driver leaves</h2>
+<ul class="check">
+<li><span class="tick"></span><span><b>POD obtained</b> — signed delivery receipt, with exceptions (shortages/damage) noted on the spot, plus photos</span></li>
+<li><span class="tick"></span><span><b>Times logged</b> — arrival / unload complete / departure for the detention record</span></li>
+<li><span class="tick"></span><span><b>Empty status known</b> — is the empty ready now (live) or when will it be (drop)? The return leg starts here</span></li>
+</ul>
+</div>`},
+
+{ pos:'86%', node:3, clocks:['stop','stop','run'], html:`
+<div class="eyebrow">Stage 7 · Returning</div>
+<h1>Empty Return &amp; Per Diem</h1>
+<div class="card">
+<p>The move isn't over when the freight is on the customer's dock. The steamship line wants its box back, and the per diem clock only stops when they get it.</p>
+<h2>Where does the empty go?</h2>
+<p><strong>Not automatically back where it came from.</strong> Each SSL publishes empty return locations by container type, and they change — sometimes daily. A line may redirect 40HCs to a different terminal or an off-dock depot, close returns entirely for a day, or require a booking for the return. Ops checks the SSL's current return matrix <em>the day of</em> the return, not from memory.</p>
+<table>
+<tr><th>Trap</th><th>What happens</th><th>Prevention</th></tr>
+<tr><td>Return location changed</td><td>Driver turned away; dry run + another day of per diem &amp; chassis</td><td>Verify return location same-day, in writing</td></tr>
+<tr><td>Terminal not accepting empties</td><td>Empty has nowhere to go; charges accrue through no fault of ours</td><td>Screenshot the closure notice — it's your ammo for a per diem dispute</td></tr>
+<tr><td>Empty not ready at consignee</td><td>Scheduled return missed; clocks keep running</td><td>Confirm "empty ready" with the warehouse the day before</td></tr>
+</table>
+<div class="callout green"><b>Dual transactions</b><p>Best case: the driver returns this empty and pulls the next load at the same terminal in one trip. It saves a gate move and keeps the carrier's cost down — always worth asking when volume allows.</p></div>
+</div>`},
+
+{ pos:'96%', node:4, clocks:['stop','stop','stop'], html:`
+<div class="eyebrow">Stage 8 · Terminated</div>
+<h1>Termination &amp; File Close-Out</h1>
+<div class="card">
+<p>The driver ingates the empty at the designated return point. The gate transaction — captured on the <strong>Equipment Interchange Receipt (EIR)</strong> — is the container's <strong>termination</strong>. Per diem stops as of that timestamp. Once the chassis goes back to the pool, the chassis clock stops too. Every clock is now off.</p>
+<h2>Close the file — nothing missing</h2>
+<ul class="check">
+<li><span class="tick"></span><span><b>Termination EIR / interchange</b> — the proof the empty went back, with date and time. If a per diem invoice shows up months later, this document wins the dispute</span></li>
+<li><span class="tick"></span><span><b>Signed POD</b> — attached to the customer file</span></li>
+<li><span class="tick"></span><span><b>Accessorial backup</b> — detention times, pre-pull authorization, yard storage days, chassis days, scale tickets — with the customer approval trail</span></li>
+<li><span class="tick"></span><span><b>Carrier invoice audit</b> — matches the rate confirm plus approved accessorials only; question anything else before paying</span></li>
+<li><span class="tick"></span><span><b>Customer invoiced &amp; status closed</b> — container marked terminated in the system, customer notified</span></li>
+</ul>
+<div class="callout"><b>Why termination proof matters</b><p>Steamship lines invoice per diem weeks or months in arrears, and their records aren't always right. A clean EIR file means a five-minute dispute instead of eating a four-figure bill. Terminated isn't a feeling — it's a document.</p></div>
+</div>`},
+
+{ pos:'96%', node:4, clocks:['stop','stop','stop'], html:`
+<div class="eyebrow">Final Stage · Knowledge Check</div>
+<h1>Prove It</h1>
+<div class="card" id="quizCard">
+<p>Five questions. Pick an answer to see instant feedback — your score posts at the end.</p>
+<div class="q" data-q="0">
+  <div class="q-title">1. Which event stops the demurrage clock?</div>
+  <button class="opt" data-c="0">The empty container is returned to the port</button>
+  <button class="opt" data-c="1">The container outgates the terminal</button>
+  <button class="opt" data-c="0">The consignee signs the POD</button>
+  <div class="q-fb"></div>
+</div>
+<div class="q" data-q="1">
+  <div class="q-title">2. A live unload takes 3.5 hours door to door. Free time is 2 hours at $85/hr after. What's the billable detention?</div>
+  <button class="opt" data-c="0">3.5 hours — $297.50</button>
+  <button class="opt" data-c="1">1.5 hours — $127.50</button>
+  <button class="opt" data-c="0">Nothing — live unloads never bill detention</button>
+  <div class="q-fb"></div>
+</div>
+<div class="q" data-q="2">
+  <div class="q-title">3. Customs hold is released but the freight hold is still active. Can you dispatch the driver?</div>
+  <button class="opt" data-c="0">Yes — customs is the only hold that matters</button>
+  <button class="opt" data-c="0">Yes, if it's before LFD</button>
+  <button class="opt" data-c="1">No — every hold must be released before pickup</button>
+  <div class="q-fb"></div>
+</div>
+<div class="q" data-q="3">
+  <div class="q-title">4. When does the per diem clock stop?</div>
+  <button class="opt" data-c="0">When the container is delivered to the consignee</button>
+  <button class="opt" data-c="1">When the empty is ingated at the SSL's designated return location</button>
+  <button class="opt" data-c="0">When the customer pays the invoice</button>
+  <div class="q-fb"></div>
+</div>
+<div class="q" data-q="4">
+  <div class="q-title">5. On a drop &amp; pick, the container sits at the consignee for four days. Which charges keep accruing?</div>
+  <button class="opt" data-c="0">Demurrage and driver detention</button>
+  <button class="opt" data-c="1">Chassis rental and per diem free time</button>
+  <button class="opt" data-c="0">Nothing — a drop is free until the empty pickup</button>
+  <div class="q-fb"></div>
+</div>
+</div>`},
+
+{ pos:'96%', node:4, clocks:['stop','stop','stop'], html:`
+<div class="eyebrow">Module Complete</div>
+<h1>Container Terminated. File Closed.</h1>
+<div class="card" style="text-align:center;padding:40px 22px">
+  <div class="badge">Module 02 Complete</div>
+  <div class="score-big" id="scoreOut">–</div>
+  <p style="max-width:none;margin-top:8px" id="scoreMsg"></p>
+  <p style="max-width:none;color:var(--muted);font-size:14px">Demurrage stops at outgate. Detention needs timestamps. Per diem stops at termination — and termination is a document, not a feeling.</p>
+  <button class="btn-next" onclick="goTo(0)" style="margin-top:14px">Restart Module</button>
+</div>`}
+];
+
+const CORRECT_FB = ["Right — the outgate timestamp ends demurrage; the box has left terminal property.",
+"Correct — 3.5 hrs minus 2 free = 1.5 billable hours at $85.",
+"Correct — one active hold of any kind means the box won't release at the gate. Dispatching anyway buys a dry run.",
+"Right — termination at the designated return point is the only thing that stops per diem.",
+"Correct — the box is off-terminal (no demurrage) and no driver is waiting (no detention), but the chassis and the SSL's free-time clock keep running."];
+const WRONG_FB = ["Not quite — demurrage is a terminal charge; it ends at outgate, not at delivery or empty return.",
+"Check the free time — the first 2 hours are free, so only 1.5 hours bill.",
+"No — all holds (customs, freight, terminal, exam) must be clear before dispatch.",
+"Per diem is the steamship line's equipment charge — it runs until the empty is terminated at their designated return point.",
+"Think about what's still out: the chassis is rented by the day, and the SSL's per diem free days keep burning while the box sits."];
+
+const AUDIO = {
+  0:'audio/stage0-intro.mp3',
+  1:'audio/stage1-do-sent.mp3',
+  2:'audio/stage2-holds.mp3',
+  3:'audio/stage3-lfd-prepull.mp3',
+  4:'audio/stage4-appointments.mp3',
+  5:'audio/stage5-outgate.mp3',
+  6:'audio/stage6-delivery.mp3',
+  7:'audio/stage7-empty-return.mp3',
+  8:'audio/stage8-termination.mp3'
+};
+
+let cur = 0;
+let answered = new Set();
+let score = 0;
+const main = document.getElementById('steps');
+const player = new Audio();
+let playingStep = null;
+
+// build step containers
+STEPS.forEach((s,i)=>{
+  const d = document.createElement('section');
+  d.className = 'step'; d.id = 'step'+i;
+  const playerHTML = AUDIO[i] ? `
+  <div class="player">
+    <button class="p-btn" data-play="${i}" aria-label="Play narration">▶</button>
+    <div class="p-meta">
+      <div class="p-lbl">Listen — Mendy walks you through this stage</div>
+      <div class="p-track" data-seek="${i}"><i></i></div>
+    </div>
+    <div class="p-time">0:00 / –:––</div>
+  </div>` : '';
+  d.innerHTML = s.html.replace('</h1>', '</h1>'+playerHTML) + navHTML(i);
+  main.appendChild(d);
+});
+
+function fmt(t){
+  if(!isFinite(t)) return '–:––';
+  const m = Math.floor(t/60), s = Math.floor(t%60);
+  return m+':'+String(s).padStart(2,'0');
+}
+
+function stopAudio(){
+  player.pause();
+  if(playingStep !== null){
+    const btn = document.querySelector('[data-play="'+playingStep+'"]');
+    if(btn) btn.textContent = '▶';
+  }
+  playingStep = null;
+}
+
+document.addEventListener('click', e=>{
+  const pb = e.target.closest('.p-btn');
+  if(pb){
+    const i = +pb.dataset.play;
+    if(playingStep === i && !player.paused){
+      player.pause(); pb.textContent = '▶'; return;
+    }
+    if(playingStep !== i){
+      stopAudio();
+      player.src = AUDIO[i];
+      playingStep = i;
+    }
+    player.play(); pb.textContent = '❚❚';
+    playingStep = i;
+    return;
+  }
+  const tk = e.target.closest('.p-track');
+  if(tk && playingStep === +tk.dataset.seek && isFinite(player.duration)){
+    const r = tk.getBoundingClientRect();
+    player.currentTime = ((e.clientX - r.left)/r.width) * player.duration;
+  }
+});
+
+player.addEventListener('timeupdate', ()=>{
+  if(playingStep === null) return;
+  const step = document.getElementById('step'+playingStep);
+  if(!step) return;
+  const bar = step.querySelector('.p-track i');
+  const tm = step.querySelector('.p-time');
+  if(bar && isFinite(player.duration)) bar.style.width = (player.currentTime/player.duration*100)+'%';
+  if(tm) tm.textContent = fmt(player.currentTime)+' / '+fmt(player.duration);
+});
+player.addEventListener('ended', ()=>{
+  const btn = document.querySelector('[data-play="'+playingStep+'"]');
+  if(btn) btn.textContent = '▶';
+});
+
+function navHTML(i){
+  if(i === STEPS.length-1) return '';
+  const back = i>0 ? '<button class="btn-back" onclick="goTo('+(i-1)+')">Back</button>' : '<span></span>';
+  const nextLbl = i===0 ? 'Start the Move' : (i===STEPS.length-2 ? 'Finish' : 'Next Stage');
+  return '<div class="nav">'+back+'<span class="step-count">'+(i)+' / '+(STEPS.length-2)+'</span><button class="btn-next" onclick="goTo('+(i+1)+')">'+nextLbl+'</button></div>';
+}
+
+function goTo(i){
+  stopAudio();
+  if(i===0){answered=new Set();score=0;resetQuiz();resetChecks();}
+  cur = i;
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('step'+i).classList.add('active');
+  const st = STEPS[i];
+  // tracker
+  document.getElementById('boxIcon').style.left = st.pos;
+  document.getElementById('routeFill').style.width = st.pos;
+  document.querySelectorAll('.node').forEach(n=>{
+    const idx = +n.dataset.n;
+    n.classList.toggle('done', idx < st.node);
+    n.classList.toggle('on', idx === st.node);
+  });
+  document.querySelectorAll('.node-lbl').forEach(n=>{
+    n.classList.toggle('on', +n.dataset.n <= st.node);
+  });
+  document.getElementById('stageTag').textContent = 'STAGE '+Math.min(i,8)+' / 8';
+  // clocks
+  const names = {idle:'Idle', risk:'At Risk', run:'Running', stop:'Stopped'};
+  [['ckDem',0],['ckDet',1],['ckPd',2]].forEach(([id,ix])=>{
+    const el = document.getElementById(id);
+    el.className = 'st '+st.clocks[ix];
+    el.textContent = names[st.clocks[ix]];
+  });
+  // progress
+  document.getElementById('progBar').style.width = (i/(STEPS.length-1)*100)+'%';
+  // score screen
+  if(i === STEPS.length-1){
+    document.getElementById('scoreOut').textContent = score+' / 5';
+    document.getElementById('scoreMsg').textContent =
+      score===5 ? 'Perfect score. You can run this move.' :
+      score>=3 ? 'Solid — review the stages you missed and take the check again.' :
+      'Worth a second pass. Restart the module and watch the clocks panel as you go.';
+  }
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// checklists
+document.addEventListener('click', e=>{
+  const li = e.target.closest('.check li');
+  if(li) li.classList.toggle('done');
+  const opt = e.target.closest('.opt');
+  if(opt && !opt.disabled){
+    const q = opt.closest('.q');
+    if(answered.has(q.dataset.q)) return;
+    answered.add(q.dataset.q);
+    const good = opt.dataset.c === '1';
+    if(good) score++;
+    q.querySelectorAll('.opt').forEach(o=>{
+      o.disabled = true;
+      if(o.dataset.c==='1') o.classList.add('correct');
+    });
+    if(!good) opt.classList.add('wrong');
+    const fb = q.querySelector('.q-fb');
+    fb.textContent = good ? CORRECT_FB[+q.dataset.q] : WRONG_FB[+q.dataset.q];
+    fb.classList.add('show', good?'good':'bad');
+  }
+});
+
+function resetQuiz(){
+  document.querySelectorAll('.q').forEach(q=>{
+    q.querySelectorAll('.opt').forEach(o=>{o.disabled=false;o.classList.remove('correct','wrong')});
+    const fb=q.querySelector('.q-fb'); fb.className='q-fb'; fb.textContent='';
+  });
+}
+function resetChecks(){
+  document.querySelectorAll('.check li').forEach(l=>l.classList.remove('done'));
+}
+
+goTo(0);
+</script>
+</body>
+</html>
