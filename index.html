@@ -353,7 +353,7 @@ const STEPS = [
 </ul>
 <h2>After it goes out</h2>
 <p>A sent DO is not an accepted DO. The trucker must <strong>confirm receipt or acknowledge it</strong>. Until they do, assume the container is uncovered.</p>
-<div class="callout"><b>The 24-hour rule</b><p>No confirmation within 24 hours → follow up. If it's already <strong>a day before ETA</strong> and there's still no confirmation, escalate to Carla and Frady to handle accordingly. Do not sit on an unconfirmed DO with a vessel about to arrive.</p></div>
+<div class="callout"><b>The 24-hour rule</b><p>No confirmation within 24 hours → follow up. If it's already <strong>a day before ETA</strong> and there's still no confirmation, escalate to MK and Julianny to handle accordingly. Do not sit on an unconfirmed DO with a vessel about to arrive.</p></div>
 <div class="callout"><b>Ops watchpoint</b><p>Most expensive mistakes in drayage are made in the first ten minutes — a wrong delivery address, a wrong email in copy, or an unconfirmed trucker. Slow down here to move fast later.</p></div>
 </div>`},
 
@@ -539,7 +539,7 @@ const STEPS = [
 <div class="q" data-q="5">
   <div class="q-title">6. You sent a DO yesterday, no confirmation from the trucker, and the vessel's ETA is tomorrow. What do you do?</div>
   <button class="opt" data-c="0">Wait another 24 hours — the rule is to follow up, not panic</button>
-  <button class="opt" data-c="1">Escalate to Carla and Frady to handle accordingly</button>
+  <button class="opt" data-c="1">Escalate to MK and Julianny to handle accordingly</button>
   <button class="opt" data-c="0">Send the DO again and assume it's covered</button>
   <div class="q-fb"></div>
 </div>
@@ -569,14 +569,14 @@ const CORRECT_FB = ["Right — the outgate timestamp ends demurrage; the box has
 "Correct — one active hold of any kind means the box won't release at the gate. Dispatching anyway buys a dry run.",
 "Right — termination at the designated return point is the only thing that stops per diem.",
 "Correct — the box is off-terminal (no demurrage) and no driver is waiting (no detention), but the chassis and the SSL's free-time clock keep running.",
-"Correct — 24 hours with no confirmation means follow up; a day before ETA with no confirmation means escalate to Carla and Frady. Never sit on it.",
+"Correct — 24 hours with no confirmation means follow up; a day before ETA with no confirmation means escalate to MK and Julianny. Never sit on it.",
 "Right — off-hire means a different return location, from the carrier or overseas agent. The trucker must know before rolling, or it's a dry run."];
 const WRONG_FB = ["Not quite — demurrage is a terminal charge; it ends at outgate, not at delivery or empty return.",
 "Check the free time — the first 2 hours are free, so only 1.5 hours bill.",
 "No — all holds (customs, freight, terminal, exam) must be clear before dispatch.",
 "Per diem is the steamship line's equipment charge — it runs until the empty is terminated at their designated return point.",
 "Think about what's still out: the chassis is rented by the day, and the SSL's per diem free days keep burning while the box sits.",
-"The 24-hour rule: follow up after 24 hours, but a day before ETA with no confirmation is an escalation to Carla and Frady — not a waiting game.",
+"The 24-hour rule: follow up after 24 hours, but a day before ETA with no confirmation is an escalation to MK and Julianny — not a waiting game.",
 "Off-hire means the return location is different from pickup — get it from the carrier or overseas agent and make sure the trucker has it."];
 
 const AUDIO = {
