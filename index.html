@@ -334,7 +334,7 @@ const STEPS = [
 <div class="eyebrow">Module 02 · Introduction</div>
 <h1>From DO to Termination</h1>
 <div class="card">
-<p><strong>What this module covers.</strong> The moment we send a Delivery Order (DO) to a drayage carrier, Shifl's job is not done — it changes. From that point until the empty container is terminated back at the port, we are managing three running cost clocks, a chain of appointments, and a paper trail that has to close cleanly.</p>
+<p><strong>What this module covers.</strong> A Delivery Order (DO) is the official document we issue authorizing release of the cargo — the terminal will only release a container to a trucker who presents it. Sending it is a simple step, but everything after it is where deliveries are won or lost. From the moment the DO goes out until the empty container is terminated back at the port, the Import team is managing three running cost clocks, a chain of releases and appointments, and a paper trail that has to close cleanly.</p>
 <p>By the end of this walkthrough you'll be able to follow one container — <span class="mono">SHFU 402118 6</span> — through every stage in the tracker above, and know exactly what Ops is responsible for at each one.</p>
 <div class="callout"><b>The three clocks</b><p>Watch the panel above as you move through the module. <strong>Demurrage</strong> (terminal charges the cargo owner for the box sitting at the port), <strong>driver detention</strong> (carrier charges for wait time at delivery), and <strong>per diem</strong> (steamship line charges for keeping their container out) each start and stop at different events. Knowing those trigger events is 80% of drayage ops.</p></div>
 <p>Click any checklist item as you go — it's how you'll work in real life, so practice it here.</p>
@@ -344,66 +344,66 @@ const STEPS = [
 <div class="eyebrow">Stage 1 · Dispatch</div>
 <h1>DO Sent — Get a Real Confirmation</h1>
 <div class="card">
-<p>A sent DO is not an accepted DO. The carrier must <strong>confirm acceptance in writing</strong> (email or portal). Until they do, assume the container is uncovered and keep your backup carrier options warm.</p>
-<h2>Verify the DO against the booking</h2>
+<h2>Before it goes out</h2>
 <ul class="check">
-<li><span class="tick"></span><span><b>Container # &amp; size/type</b> — matches the arrival notice (e.g. 40HC vs 40STD changes chassis and legal weight math)</span></li>
-<li><span class="tick"></span><span><b>MBL # and steamship line</b> — the SSL determines the empty return location later</span></li>
-<li><span class="tick"></span><span><b>Terminal</b> — which pier the vessel discharges at (APM, Maher, PNCT, GCT Bayonne, etc.)</span></li>
-<li><span class="tick"></span><span><b>Delivery address, hours &amp; contact</b> — and whether it's a live unload or a drop</span></li>
-<li><span class="tick"></span><span><b>Weight</b> — flag anything near or over legal road weight; overweight needs a tri-axle chassis and OW permit pricing</span></li>
-<li><span class="tick"></span><span><b>Special handling</b> — hazmat, reefer (genset?), residential, liftgate, appointment-only warehouse</span></li>
+<li><span class="tick"></span><span><b>Check trucking requirements</b> — is there a default delivery location and default trucker for this POD? If yes, select and send. If not, check the booking communication for a delivery address — otherwise request delivery info from the customer</span></li>
+<li><span class="tick"></span><span><b>Multiple locations?</b> — follow the trucking notes, or reach out to the account manager. Different containers under the same ref# can have different delivery locations</span></li>
+<li><span class="tick"></span><span><b>If Shifl handles delivery</b> — get a quote from the trucking team → quote the customer → once confirmed, assign the trucker, enter the location in the system and link it to the trucker</span></li>
+<li><span class="tick"></span><span><b>Review To: and CC: before sending</b> — one wrong email on a DO means delivery details going to the wrong party. Check every address, every time</span></li>
 </ul>
-<div class="callout"><b>Ops watchpoint</b><p>Most expensive mistakes in drayage are made in the first ten minutes — a wrong terminal, a missed overweight flag, or an unconfirmed carrier. Slow down here to move fast later.</p></div>
+<h2>After it goes out</h2>
+<p>A sent DO is not an accepted DO. The trucker must <strong>confirm receipt or acknowledge it</strong>. Until they do, assume the container is uncovered.</p>
+<div class="callout"><b>The 24-hour rule</b><p>No confirmation within 24 hours → follow up. If it's already <strong>a day before ETA</strong> and there's still no confirmation, escalate to Carla and Frady to handle accordingly. Do not sit on an unconfirmed DO with a vessel about to arrive.</p></div>
+<div class="callout"><b>Ops watchpoint</b><p>Most expensive mistakes in drayage are made in the first ten minutes — a wrong delivery address, a wrong email in copy, or an unconfirmed trucker. Slow down here to move fast later.</p></div>
 </div>`},
 
 { pos:'28%', node:1, clocks:['risk','idle','idle'], html:`
 <div class="eyebrow">Stage 2 · At Terminal</div>
-<h1>Availability &amp; Holds</h1>
+<h1>Releases, Holds &amp; Tracking</h1>
 <div class="card">
-<p>Once the vessel discharges, the container shows up in the terminal's system — but <strong>discharged ≠ available</strong>. A container can only be picked up when every hold on it is released.</p>
-<h2>The holds you'll see</h2>
-<table>
-<tr><th>Hold</th><th>Who releases it</th><th>What Ops does</th></tr>
-<tr><td>Customs hold</td><td>CBP, via the customs broker</td><td>Confirm entry is filed and released; chase the broker, not the terminal</td></tr>
-<tr><td>Freight hold</td><td>Steamship line</td><td>Ocean freight/fees unpaid or original BL not surrendered — escalate to the forwarder/customer</td></tr>
-<tr><td>Terminal / demurrage hold</td><td>Terminal</td><td>Demurrage owed must be paid (usually online) before the gate will release</td></tr>
-<tr><td>USDA / exam hold</td><td>Government agency</td><td>Nothing moves until the exam clears — reset customer expectations early</td></tr>
-</table>
-<div class="callout red"><b>Never dispatch on a hold</b><p>If a driver shows up for a container with any active hold, the trip is wasted — and the carrier will bill a dry run. Check availability the morning of pickup, not just the day before. Holds can reappear.</p></div>
-<p>Track availability daily on the terminal portal or a tracking tool, and log the <strong>Last Free Day (LFD)</strong> the moment it posts. LFD drives everything in the next stage.</p>
+<p>The goal: the shipment is <strong>fully released by the time the vessel arrives</strong>, so the trucker can coordinate pickup the moment the container is discharged. Discharged ≠ available — a container can only be picked up when every release is in place.</p>
+<h2>Processing release — before arrival</h2>
+<ul class="check">
+<li><span class="tick"></span><span><b>Freight release</b> — freight paid to the carrier + OBL/MBL telex release</span></li>
+<li><span class="tick"></span><span><b>Customs release</b> — customs cleared + HBL telex release</span></li>
+<li><span class="tick"></span><span><b>Other charges cleared</b> — Pier Pass (TMF) and CTF for LA/Long Beach pickups, gate fees, port fees. If we pay it: add to the Pier Pass list and onto the customer invoice with markup. If the customer or trucker pays it: send a reminder if it's unpaid by discharge</span></li>
+</ul>
+<h2>Tracking at the terminal — from ETA</h2>
+<p>Once you reach the ETA, start tracking at the terminal daily: freight and customs released, no fees pending, and whether the container has <strong>discharged</strong> off the vessel. Discharge is what starts the free-time clock — log the <strong>Last Free Day (LFD)</strong> the moment it posts.</p>
+<div class="callout red"><b>Never dispatch on a hold</b><p>If a driver shows up for a container with any pending release or fee, the trip is wasted — and the trucker will bill a dry run. Check availability the morning of pickup, not just the day before. Holds can reappear.</p></div>
+<div class="callout"><b>Why releases slip</b><p>Late telex release, COD customers who haven't paid, freight or customs issues — these are the usual reasons a shipment drifts toward demurrage. Spot them before ETA, not after LFD.</p></div>
 </div>`},
 
 { pos:'28%', node:1, clocks:['risk','idle','idle'], html:`
 <div class="eyebrow">Stage 3 · At Terminal</div>
-<h1>LFD, Demurrage &amp; the Pre-Pull Call</h1>
+<h1>Discharge, LFD &amp; the Pre-Pull Call</h1>
 <div class="card">
-<p>Every import container gets a few free days at the terminal after discharge. The last of them is the <strong>Last Free Day (LFD)</strong>. From the next day forward, the terminal charges <strong>demurrage</strong> — often $150–$375+ per day, escalating the longer it sits.</p>
-<h2>When delivery can't happen before LFD</h2>
-<p>If the consignee can't receive the box before demurrage starts, we have a decision to make:</p>
+<p>The moment the container discharges: <strong>notify everyone on the DO — customer and trucker — that it's discharged, and give them the LFD.</strong> Every import container gets free days at the terminal after discharge; after the Last Free Day, <strong>demurrage</strong> accrues daily.</p>
+<h2>Scheduling the delivery</h2>
+<p>Confirm the pickup date with the trucker (availability and appointment times vary by season, how busy the trucker is, and how congested the terminal is), then schedule delivery with the customer based on the pickup:</p>
 <table>
-<tr><th>Option</th><th>What it is</th><th>Typical cost logic</th></tr>
-<tr><td>Eat demurrage</td><td>Leave the box at the terminal past LFD</td><td>Rarely the right answer — daily rate escalates and the box can get buried</td></tr>
-<tr><td>Pre-pull</td><td>Pull the container before LFD and stage it in the carrier's yard</td><td>Pre-pull fee (~$150) + yard storage (~$40/day) + chassis days — usually far cheaper than demurrage</td></tr>
-<tr><td>Pre-pull + early delivery push</td><td>Pre-pull and pressure the consignee for the first open dock</td><td>Best of both — minimizes storage and chassis days</td></tr>
+<tr><th>Path</th><th>When it applies</th><th>Cost impact</th></tr>
+<tr><td>Direct delivery</td><td>Delivery time is flexible and the customer can accept anytime (usually afternoon)</td><td>Cleanest and cheapest — straight from port to door</td></tr>
+<tr><td>Pre-pull</td><td>Trucker can't deliver straight from the port — late appointment, pickup after warehouse hours</td><td>Pre-pull charge + 1 day yard storage in most cases (varies by trucker)</td></tr>
 </table>
 <div class="callout"><b>Ops watchpoint</b><p>Do the math out loud with the customer <em>before</em> LFD, not after. A pre-pull authorized on the last free day is a win; the same email one day later is an apology plus a demurrage invoice.</p></div>
-<div class="callout green"><b>Remember the trade</b><p>A pre-pull stops the demurrage clock — but it starts chassis and yard-storage charges, and the per diem free-time clock keeps ticking regardless. You're trading one clock for cheaper ones, not stopping time.</p></div>
+<div class="callout green"><b>Closed area? Get the LFD extended</b><p>During port congestion a container can sit in a closed area where no one can touch it. Reach out to the port to get it moving — and once it's available, <strong>get an LFD extension</strong>. We are not responsible for demurrage caused by the terminal's own congestion, but only if we push for the extension.</p></div>
 </div>`},
 
 { pos:'28%', node:1, clocks:['risk','idle','idle'], html:`
 <div class="eyebrow">Stage 4 · At Terminal</div>
 <h1>Appointments — Get the Confirmation</h1>
 <div class="card">
-<p>With the box released and LFD under control, the carrier books the pickup. <strong>We are the broker — we don't book terminal appointments, the carrier does.</strong> Our job is to make sure it actually happened and have proof of it in the file.</p>
-<h2>Confirm the carrier is booked</h2>
+<p>With the box released and LFD under control, the trucker books the pickup. <strong>We are the forwarder — we don't book terminal appointments, the trucker does.</strong> Our job is to make sure it actually happened and have proof of it in the file.</p>
+<h2>Confirm the trucker is booked</h2>
 <ul class="check">
-<li><span class="tick"></span><span><b>Ask if an appointment is needed</b> — most NY/NJ terminals run appointment systems; confirm with the carrier whether this terminal/move requires one</span></li>
-<li><span class="tick"></span><span><b>Get the confirmation in writing</b> — appointment number, date, and time window, sent by the carrier (email or portal screenshot)</span></li>
+<li><span class="tick"></span><span><b>Ask if an appointment is needed</b> — many terminals run appointment systems; confirm with the trucker whether this terminal/move requires one</span></li>
+<li><span class="tick"></span><span><b>Get the confirmation in writing</b> — appointment number, date, and time window, sent by the trucker (email or portal screenshot)</span></li>
 <li><span class="tick"></span><span><b>Check it against LFD</b> — the appointment must land on or before the Last Free Day, or we're back in the pre-pull conversation</span></li>
-<li><span class="tick"></span><span><b>Check it against delivery</b> — pickup timing has to work with the consignee's receiving window; a morning pickup for an afternoon delivery appointment, not the other way around</span></li>
+<li><span class="tick"></span><span><b>Check it against delivery</b> — pickup timing has to work with the consignee's receiving window</span></li>
 </ul>
-<div class="callout"><b>Ops watchpoint</b><p>"We'll get an appointment" is not an appointment. Slots at busy terminals go fast — if the carrier can't show you an appointment number, treat the pickup as unbooked and escalate early. Finding out at 4 PM the day before LFD is how demurrage happens.</p></div>
+<div class="callout"><b>Rail moves — track the pickup number</b><p>Picking up from a rail port requires a <strong>pickup number</strong>, provided by the carrier or co-loader only once the container is available. Track it closely — no number, no pickup. And remember: rail ETA is only accurate once the container is actually loaded onto the rail.</p></div>
+<div class="callout"><b>Ops watchpoint</b><p>"We'll get an appointment" is not an appointment. Slots at busy terminals go fast — if the trucker can't show you an appointment number, treat the pickup as unbooked and escalate early. Finding out at 4 PM the day before LFD is how demurrage happens.</p></div>
 </div>`},
 
 { pos:'52%', node:2, clocks:['stop','idle','run'], html:`
@@ -415,8 +415,9 @@ const STEPS = [
 <div class="callout red"><b>Per diem exposure begins</b><p>The steamship line's container is now "out." The SSL grants a few free days (varies by line and contract); after that, per diem runs daily — typically $85–$150+/day — until the empty is terminated. From outgate on, every day matters.</p></div>
 <h2>What Ops does on pickup day</h2>
 <ul class="check">
-<li><span class="tick"></span><span><b>Confirm outgate</b> — get the outgate time from the carrier or terminal system; update the customer proactively</span></li>
-<li><span class="tick"></span><span><b>Check the interchange (EIR)</b> — driver notes any existing damage to container/chassis at the gate; photos protect everyone later</span></li>
+<li><span class="tick"></span><span><b>Confirm it was picked up</b> — get the outgate time from the trucker or terminal system; update the customer proactively</span></li>
+<li><span class="tick"></span><span><b>Communicate the free days</b> — confirm and tell both the customer and the trucker how many free days remain before per diem starts. Everyone should know the deadline on day one, not when the bill shows up</span></li>
+<li><span class="tick"></span><span><b>Update the system</b> — enter the number of free days so the whole team can see the per diem deadline</span></li>
 <li><span class="tick"></span><span><b>ETA to consignee</b> — confirm the driver makes the delivery appointment; if not, call the warehouse before they call you</span></li>
 </ul>
 </div>`},
@@ -426,14 +427,15 @@ const STEPS = [
 <h1>Delivery — Live Unload vs Drop</h1>
 <div class="card">
 <h2>Live unload</h2>
-<p>The driver waits while the consignee unloads. Free time is typically <strong>1–2 hours</strong>; after that, driver detention bills by the hour (e.g. $85/hr after 2 free hours). Ops should get <strong>in/out times from the driver in writing</strong> — arrival at the door, unload start, departure. No timestamps, no defensible detention invoice.</p>
-<h2>Drop &amp; pick</h2>
-<p>The driver drops the loaded container (on the chassis) at the consignee and leaves. No detention — but now the box and chassis sit there for days:</p>
+<p>The driver waits while the consignee unloads. There are usually <strong>2 free hours</strong> before the driver charges waiting time. Ops should get <strong>in/out times from the driver in writing</strong> — arrival at the door, unload start, departure. No timestamps, no defensible detention invoice.</p>
+<h2>Drop</h2>
+<p>The trucker drops the container at the delivery location until the customer confirms it's ready for pickup. No waiting time — but now the box and chassis sit there for days:</p>
 <div class="callout"><b>What keeps running on a drop</b><p><strong>Chassis rental</strong> (daily) and the <strong>per diem free-time clock</strong> both keep going while the container sits at the warehouse. A "free" drop that sits five days can cost more than paid detention. Agree the pickup date for the empty at the time of the drop, and diarize it.</p></div>
-<h2>Either way, before the driver leaves</h2>
+<h2>Either way</h2>
 <ul class="check">
+<li><span class="tick"></span><span><b>Confirm with the receiver</b> — the container was delivered at the pre-arranged time; don't assume, verify</span></li>
 <li><span class="tick"></span><span><b>POD obtained</b> — signed delivery receipt, with exceptions (shortages/damage) noted on the spot, plus photos</span></li>
-<li><span class="tick"></span><span><b>Times logged</b> — arrival / unload complete / departure for the detention record</span></li>
+<li><span class="tick"></span><span><b>Times logged</b> — arrival / unload complete / departure for the waiting-time record</span></li>
 <li><span class="tick"></span><span><b>Empty status known</b> — is the empty ready now (live) or when will it be (drop)? The return leg starts here</span></li>
 </ul>
 </div>`},
@@ -443,15 +445,14 @@ const STEPS = [
 <h1>Empty Return &amp; Per Diem</h1>
 <div class="card">
 <p>The move isn't over when the freight is on the customer's dock. The steamship line wants its box back, and the per diem clock only stops when they get it.</p>
-<h2>Where does the empty go?</h2>
-<p><strong>Not automatically back where it came from.</strong> Each SSL publishes empty return locations by container type, and they change — sometimes daily. A line may redirect 40HCs to a different terminal or an off-dock depot, close returns entirely for a day, or require a booking for the return. Ops checks the SSL's current return matrix <em>the day of</em> the return, not from memory.</p>
-<table>
-<tr><th>Trap</th><th>What happens</th><th>Prevention</th></tr>
-<tr><td>Return location changed</td><td>Driver turned away; dry run + another day of per diem &amp; chassis</td><td>Verify return location same-day, in writing</td></tr>
-<tr><td>Terminal not accepting empties</td><td>Empty has nowhere to go; charges accrue through no fault of ours</td><td>Screenshot the closure notice — it's your ammo for a per diem dispute</td></tr>
-<tr><td>Empty not ready at consignee</td><td>Scheduled return missed; clocks keep running</td><td>Confirm "empty ready" with the warehouse the day before</td></tr>
-</table>
-<div class="callout green"><b>Dual transactions</b><p>Best case: the driver returns this empty and pulls the next load at the same terminal in one trip. It saves a gate move and keeps the carrier's cost down — always worth asking when volume allows.</p></div>
+<h2>The return rules</h2>
+<ul class="check">
+<li><span class="tick"></span><span><b>Off-hire container?</b> — if the container can't be returned where it was picked up, it has a different return location that we get from the carrier or overseas agent (usually notified beforehand). Make sure the trucker knows the correct location <em>before</em> they roll — and note the chassis may return somewhere else again, which can mean a stop-off charge</span></li>
+<li><span class="tick"></span><span><b>Live unload</b> — the empty should be returned within <strong>24–48 hours after delivery</strong></span></li>
+<li><span class="tick"></span><span><b>Drop</b> — remind the customer to unload within the free time, and follow with the trucker to return the empty before per diem starts</span></li>
+</ul>
+<div class="callout red"><b>No return appointments available?</b><p>Keep following up with the trucker, and make sure the customer is aware so there are no surprise charges. You can reach out to the terminal directly to push for a return appointment. Document every attempt — that trail is your ammunition for a per diem dispute later.</p></div>
+<div class="callout green"><b>Dual transactions</b><p>Best case: the driver returns this empty and pulls the next load at the same terminal in one trip. It saves a gate move and keeps the trucker's cost down — always worth asking when volume allows.</p></div>
 </div>`},
 
 { pos:'96%', node:4, clocks:['stop','stop','stop'], html:`
@@ -463,18 +464,43 @@ const STEPS = [
 <ul class="check">
 <li><span class="tick"></span><span><b>Termination EIR / interchange</b> — the proof the empty went back, with date and time. If a per diem invoice shows up months later, this document wins the dispute</span></li>
 <li><span class="tick"></span><span><b>Signed POD</b> — attached to the customer file</span></li>
-<li><span class="tick"></span><span><b>Accessorial backup</b> — detention times, pre-pull authorization, yard storage days, chassis days, scale tickets — with the customer approval trail</span></li>
-<li><span class="tick"></span><span><b>Carrier invoice audit</b> — matches the rate confirm plus approved accessorials only; question anything else before paying</span></li>
-<li><span class="tick"></span><span><b>Customer invoiced &amp; status closed</b> — container marked terminated in the system, customer notified</span></li>
+<li><span class="tick"></span><span><b>Accessorial backup</b> — waiting time records, pre-pull authorization, yard storage days, chassis days — with the customer approval trail</span></li>
+</ul>
+<h2>Billing the customer <span style="font-size:14px;color:var(--muted)">(when trucking is done through Shifl)</span></h2>
+<ul class="check">
+<li><span class="tick"></span><span><b>Get the invoice from the trucker</b> — check it matches the quote plus approved accessorials only; question anything else before paying</span></li>
+<li><span class="tick"></span><span><b>Enter the bill into the system</b></span></li>
+<li><span class="tick"></span><span><b>Create the trucking invoice for the customer</b> — check if there's a predetermined markup for this customer; otherwise follow the markup formula on the shared sheet</span></li>
 </ul>
 <div class="callout"><b>Why termination proof matters</b><p>Steamship lines invoice per diem weeks or months in arrears, and their records aren't always right. A clean EIR file means a five-minute dispute instead of eating a four-figure bill. Terminated isn't a feeling — it's a document.</p></div>
+</div>`},
+
+{ pos:'96%', node:4, clocks:['stop','stop','stop'], html:`
+<div class="eyebrow">Stage 9 · Special Cases</div>
+<h1>COD Customers &amp; Amazon</h1>
+<div class="card">
+<h2>COD customers — bill before delivery</h2>
+<p>Accounting labels a customer COD if they're a one-time customer, have no insurance coverage/terms, or carry a large overdue balance. <strong>COD customers must be billed before delivery:</strong></p>
+<ul class="check">
+<li><span class="tick"></span><span><b>Build the advance invoice</b> — base rate + 3 days chassis, plus any accessorial we already know applies (overweight, stop-off, etc.). Can be added to the ocean freight invoice</span></li>
+<li><span class="tick"></span><span><b>Send it and confirm payment</b> — do not proceed with delivery until the customer has paid</span></li>
+<li><span class="tick"></span><span><b>Bill the remainder after delivery</b> — any accessorials that come up on the final trucker invoice go on a follow-up invoice (or update the same one, per customer preference). The point: the majority of the trucking bill is already collected</span></li>
+</ul>
+<h2>Amazon deliveries</h2>
+<p>The customer creates a PO on Amazon, Amazon assigns a delivery location and FBA#, and the shipment is usually labeled at origin for direct delivery.</p>
+<ul class="check">
+<li><span class="tick"></span><span><b>Request the FBA# + location at time of departure</b> — not at arrival. Send it to the trucker so the appointment is made well in advance</span></li>
+<li><span class="tick"></span><span><b>Watch Amazon's busy seasons</b> — when they're overloaded, appointments slip and extra charges follow. Early appointments are the defense</span></li>
+<li><span class="tick"></span><span><b>Czechmate is our default Amazon trucker</b> — rates are all-inclusive except chassis at $40/day, and waiting time after 2 free hours at $75/hr, capped at $600 (they don't charge beyond 8 hours)</span></li>
+</ul>
+<div class="callout"><b>Ops watchpoint</b><p>Both cases share one theme: the work happens <em>before</em> the container moves. A COD customer billed late or an Amazon appointment requested late can't be fixed on delivery day.</p></div>
 </div>`},
 
 { pos:'96%', node:4, clocks:['stop','stop','stop'], html:`
 <div class="eyebrow">Final Stage · Knowledge Check</div>
 <h1>Prove It</h1>
 <div class="card" id="quizCard">
-<p>Five questions. Pick an answer to see instant feedback — your score posts at the end.</p>
+<p>Seven questions. Pick an answer to see instant feedback — your score posts at the end.</p>
 <div class="q" data-q="0">
   <div class="q-title">1. Which event stops the demurrage clock?</div>
   <button class="opt" data-c="0">The empty container is returned to the port</button>
@@ -510,6 +536,20 @@ const STEPS = [
   <button class="opt" data-c="0">Nothing — a drop is free until the empty pickup</button>
   <div class="q-fb"></div>
 </div>
+<div class="q" data-q="5">
+  <div class="q-title">6. You sent a DO yesterday, no confirmation from the trucker, and the vessel's ETA is tomorrow. What do you do?</div>
+  <button class="opt" data-c="0">Wait another 24 hours — the rule is to follow up, not panic</button>
+  <button class="opt" data-c="1">Escalate to Carla and Frady to handle accordingly</button>
+  <button class="opt" data-c="0">Send the DO again and assume it's covered</button>
+  <div class="q-fb"></div>
+</div>
+<div class="q" data-q="6">
+  <div class="q-title">7. A container is marked off-hire. What does that mean for the return?</div>
+  <button class="opt" data-c="0">The container can't be returned and stays with the customer</button>
+  <button class="opt" data-c="1">It returns to a different location than pickup — get the correct location from the carrier or overseas agent and make sure the trucker knows</button>
+  <button class="opt" data-c="0">Per diem doesn't apply to off-hire containers</button>
+  <div class="q-fb"></div>
+</div>
 </div>`},
 
 { pos:'96%', node:4, clocks:['stop','stop','stop'], html:`
@@ -528,12 +568,16 @@ const CORRECT_FB = ["Right — the outgate timestamp ends demurrage; the box has
 "Correct — 3.5 hrs minus 2 free = 1.5 billable hours at $85.",
 "Correct — one active hold of any kind means the box won't release at the gate. Dispatching anyway buys a dry run.",
 "Right — termination at the designated return point is the only thing that stops per diem.",
-"Correct — the box is off-terminal (no demurrage) and no driver is waiting (no detention), but the chassis and the SSL's free-time clock keep running."];
+"Correct — the box is off-terminal (no demurrage) and no driver is waiting (no detention), but the chassis and the SSL's free-time clock keep running.",
+"Correct — 24 hours with no confirmation means follow up; a day before ETA with no confirmation means escalate to Carla and Frady. Never sit on it.",
+"Right — off-hire means a different return location, from the carrier or overseas agent. The trucker must know before rolling, or it's a dry run."];
 const WRONG_FB = ["Not quite — demurrage is a terminal charge; it ends at outgate, not at delivery or empty return.",
 "Check the free time — the first 2 hours are free, so only 1.5 hours bill.",
 "No — all holds (customs, freight, terminal, exam) must be clear before dispatch.",
 "Per diem is the steamship line's equipment charge — it runs until the empty is terminated at their designated return point.",
-"Think about what's still out: the chassis is rented by the day, and the SSL's per diem free days keep burning while the box sits."];
+"Think about what's still out: the chassis is rented by the day, and the SSL's per diem free days keep burning while the box sits.",
+"The 24-hour rule: follow up after 24 hours, but a day before ETA with no confirmation is an escalation to Carla and Frady — not a waiting game.",
+"Off-hire means the return location is different from pickup — get it from the carrier or overseas agent and make sure the trucker has it."];
 
 const AUDIO = {
   0:'audio/stage0-intro.mp3',
@@ -567,6 +611,15 @@ const GLOSSARY = {
   "terminated":"The empty container has been returned and ingated at the steamship line's designated location. All clocks stop. Proven by the EIR.",
   "accessorial":"Any charge beyond the base freight rate — detention, pre-pull, storage, chassis days, etc.",
   "hold":"A block on the container preventing pickup — customs, freight (unpaid), terminal, or exam. ALL holds must clear before dispatch.",
+  "telex release":"Electronic release of the bill of lading — no original paper BL needs to be surrendered. Late telex = late freight release = demurrage risk.",
+  "FSC":"Fuel surcharge — usually included in the base rate; if fuel spikes, charged as a percentage on top.",
+  "off-hire":"A container that can't be returned where it was picked up — it has a different return location, given by the carrier or overseas agent.",
+  "stop-off":"An extra charge when the empty container and the chassis have to be returned to different locations.",
+  "Pier Pass":"The Traffic Mitigation Fee (TMF) on containers picked up from LA/Long Beach ports. Paired with the CTF (Clean Truck Fund) fee.",
+  "COD":"Cash on delivery customer — flagged by accounting (one-time customers, no terms, or large overdue balance). Must be billed and paid BEFORE delivery.",
+  "FBA":"Fulfillment by Amazon — Amazon assigns the FBA# and delivery location; request both at departure so the delivery appointment gets booked early.",
+  "co-loader":"A consolidator we book ocean freight through — alongside the carrier, a source for pickup numbers, off-hire info, and releases.",
+  "direct delivery":"Straight from the port to the customer's door, no yard stop — the cleanest and cheapest path.",
   "live unload":"The driver waits at the dock while the warehouse unloads, then leaves with the empty.",
   "drop":"The driver leaves the loaded container at the warehouse and picks it up empty days later. No waiting — but chassis and per diem keep running."
 };
@@ -581,7 +634,8 @@ const BOTTOM = [
 "Driver waits = detention by the hour. Driver drops = the box sits and quietly costs money.",
 "Find out where the steamship line wants its empty back TODAY — it changes all the time.",
 "Empty returned + paper proof in the file = job actually done.",
-"Five questions. Prove you've got the clocks down.",
+"COD bills before the truck moves. Amazon appointments get booked at departure, not arrival.",
+"Seven questions. Prove you've got the clocks down.",
 null];
 
 let cur = 0;
@@ -675,7 +729,7 @@ document.getElementById('btnGloss').onclick = ()=>openDrawer('drGloss');
 overlay.onclick = closeDrawers;
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick = closeDrawers);
 
-const STAGE_NAMES = ["Intro — From DO to Termination","1 · DO Sent — Real Confirmation","2 · Availability & Holds","3 · LFD, Demurrage & Pre-Pull","4 · Appointments — Confirmation","5 · Outgate — Clocks Flip","6 · Delivery — Live vs Drop","7 · Empty Return & Per Diem","8 · Termination & Close-Out","Knowledge Check","Complete"];
+const STAGE_NAMES = ["Intro — From DO to Termination","1 · DO Sent — Real Confirmation","2 · Releases, Holds & Tracking","3 · Discharge, LFD & Pre-Pull","4 · Appointments — Confirmation","5 · Outgate — Clocks Flip","6 · Delivery — Live vs Drop","7 · Empty Return & Per Diem","8 · Termination & Close-Out","9 · Special Cases: COD & Amazon","Knowledge Check","Complete"];
 let visited = new Set([0]);
 function renderDrawer(){
   document.getElementById('drList').innerHTML = STAGE_NAMES.map((n,i)=>
@@ -775,7 +829,7 @@ function goTo(i){
   document.querySelectorAll('.node-lbl').forEach(n=>{
     n.classList.toggle('on', +n.dataset.n <= st.node);
   });
-  document.getElementById('stageTag').textContent = 'STAGE '+Math.min(i,8)+' / 8';
+  document.getElementById('stageTag').textContent = 'STAGE '+Math.min(i,9)+' / 9';
   // clocks
   const names = {idle:'Idle', risk:'At Risk', run:'Running', stop:'Stopped'};
   [['ckDem',0],['ckDet',1],['ckPd',2]].forEach(([id,ix])=>{
@@ -787,10 +841,10 @@ function goTo(i){
   document.getElementById('progBar').style.width = (i/(STEPS.length-1)*100)+'%';
   // score screen
   if(i === STEPS.length-1){
-    document.getElementById('scoreOut').textContent = score+' / 5';
+    document.getElementById('scoreOut').textContent = score+' / 7';
     document.getElementById('scoreMsg').textContent =
-      score===5 ? 'Perfect score. You can run this move.' :
-      score>=3 ? 'Solid — review the stages you missed and take the check again.' :
+      score===7 ? 'Perfect score. You can run this move.' :
+      score>=5 ? 'Solid — review the stages you missed and take the check again.' :
       'Worth a second pass. Restart the module and watch the clocks panel as you go.';
   }
   window.scrollTo({top:0, behavior:'smooth'});
