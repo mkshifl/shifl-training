@@ -507,76 +507,8 @@ const STEPS = [
 <div class="card" id="quizCard">
 <p>Ten questions. <strong>Enter your name first</strong> — your answers lock as soon as you pick them, and your results go straight to MK when you finish.</p>
 <div class="qname"><label for="quizName">Your name</label><input type="text" id="quizName" placeholder="First and last name" autocomplete="name"></div>
-<div class="q" data-q="0">
-  <div class="q-title">1. Which event stops the demurrage clock?</div>
-  <button class="opt" data-c="0">The empty container is returned to the port</button>
-  <button class="opt" data-c="1">The container outgates the terminal</button>
-  <button class="opt" data-c="0">The consignee signs the POD</button>
-  <div class="q-fb"></div>
-</div>
-<div class="q" data-q="1">
-  <div class="q-title">2. A live unload takes 3.5 hours door to door. Free time is 2 hours at $85/hr after. What's the billable detention?</div>
-  <button class="opt" data-c="0">3.5 hours — $297.50</button>
-  <button class="opt" data-c="1">1.5 hours — $127.50</button>
-  <button class="opt" data-c="0">Nothing — live unloads never bill detention</button>
-  <div class="q-fb"></div>
-</div>
-<div class="q" data-q="2">
-  <div class="q-title">3. Customs hold is released but the freight hold is still active. Can you dispatch the driver?</div>
-  <button class="opt" data-c="0">Yes — customs is the only hold that matters</button>
-  <button class="opt" data-c="0">Yes, if it's before LFD</button>
-  <button class="opt" data-c="1">No — every hold must be released before pickup</button>
-  <div class="q-fb"></div>
-</div>
-<div class="q" data-q="3">
-  <div class="q-title">4. When does the per diem clock stop?</div>
-  <button class="opt" data-c="0">When the container is delivered to the consignee</button>
-  <button class="opt" data-c="1">When the empty is ingated at the SSL's designated return location</button>
-  <button class="opt" data-c="0">When the customer pays the invoice</button>
-  <div class="q-fb"></div>
-</div>
-<div class="q" data-q="4">
-  <div class="q-title">5. On a drop &amp; pick, the container sits at the consignee for four days. Which charges keep accruing?</div>
-  <button class="opt" data-c="0">Demurrage and driver detention</button>
-  <button class="opt" data-c="1">Chassis rental and per diem free time</button>
-  <button class="opt" data-c="0">Nothing — a drop is free until the empty pickup</button>
-  <div class="q-fb"></div>
-</div>
-<div class="q" data-q="5">
-  <div class="q-title">6. You sent a DO yesterday, no confirmation from the trucker, and the vessel's ETA is tomorrow. What do you do?</div>
-  <button class="opt" data-c="0">Wait another 24 hours — the rule is to follow up, not panic</button>
-  <button class="opt" data-c="1">Escalate to MK and Julianny to handle accordingly</button>
-  <button class="opt" data-c="0">Send the DO again and assume it's covered</button>
-  <div class="q-fb"></div>
-</div>
-<div class="q" data-q="6">
-  <div class="q-title">7. A container is marked off-hire. What does that mean for the return?</div>
-  <button class="opt" data-c="0">The container can't be returned and stays with the customer</button>
-  <button class="opt" data-c="1">It returns to a different location than pickup — get the correct location from the carrier or overseas agent and make sure the trucker knows</button>
-  <button class="opt" data-c="0">Per diem doesn't apply to off-hire containers</button>
-  <div class="q-fb"></div>
-</div>
-<div class="q" data-q="7">
-  <div class="q-title">8. A container is stuck in a closed area at the port during congestion. Once it finally becomes available, what must you do?</div>
-  <button class="opt" data-c="0">Pay the demurrage — it's part of the cost of congestion</button>
-  <button class="opt" data-c="1">Get an LFD extension — we are not responsible for demurrage caused by a closed area</button>
-  <button class="opt" data-c="0">Nothing — closed areas automatically extend the LFD</button>
-  <div class="q-fb"></div>
-</div>
-<div class="q" data-q="8">
-  <div class="q-title">9. A COD customer's container is arriving. When and how do they get billed for trucking?</div>
-  <button class="opt" data-c="0">After delivery, once the final trucker invoice is in</button>
-  <button class="opt" data-c="1">Before delivery — base rate + 3 days chassis + any known accessorials, and payment confirmed before the truck moves</button>
-  <button class="opt" data-c="0">Only if accessorial charges come up</button>
-  <div class="q-fb"></div>
-</div>
-<div class="q" data-q="9">
-  <div class="q-title">10. What's required to pick up a container from a rail port — and when is the rail ETA actually reliable?</div>
-  <button class="opt" data-c="0">Just the DO — same as any terminal; the ETA is reliable from booking</button>
-  <button class="opt" data-c="1">A pickup number from the carrier/co-loader — and the ETA is only accurate once the container is loaded onto the rail</button>
-  <button class="opt" data-c="0">A terminal appointment number; the ETA is reliable at vessel departure</button>
-  <div class="q-fb"></div>
-</div>
+<p class="mono" style="font-size:12px;color:var(--muted)">Questions are drawn at random from a 50-question bank and rotate every 30 minutes — every attempt is different.</p>
+<div id="quizQs"></div>
 </div>`},
 
 { pos:'96%', node:4, clocks:['stop','stop','stop'], html:`
@@ -592,26 +524,78 @@ const STEPS = [
 </div>`}
 ];
 
-const CORRECT_FB = ["Right — the outgate timestamp ends demurrage; the box has left terminal property.",
-"Correct — 3.5 hrs minus 2 free = 1.5 billable hours at $85.",
-"Correct — one active hold of any kind means the box won't release at the gate. Dispatching anyway buys a dry run.",
-"Right — termination at the designated return point is the only thing that stops per diem.",
-"Correct — the box is off-terminal (no demurrage) and no driver is waiting (no detention), but the chassis and the SSL's free-time clock keep running.",
-"Correct — 24 hours with no confirmation means follow up; a day before ETA with no confirmation means escalate to MK and Julianny. Never sit on it.",
-"Right — off-hire means a different return location, from the carrier or overseas agent. The trucker must know before rolling, or it's a dry run.",
-"Correct — reach out to the port to get it moving, and once available, push for the LFD extension. Closed-area demurrage is not ours to eat — but the extension only happens if we ask.",
-"Correct — COD means billed and PAID before delivery: base + 3 days chassis + known accessorials. The remainder gets invoiced after delivery.",
-"Right — no pickup number, no rail pickup. And treat rail ETAs as guesses until the container is actually on the rail."];
-const WRONG_FB = ["Not quite — demurrage is a terminal charge; it ends at outgate, not at delivery or empty return.",
-"Check the free time — the first 2 hours are free, so only 1.5 hours bill.",
-"No — all holds (customs, freight, terminal, exam) must be clear before dispatch.",
-"Per diem is the steamship line's equipment charge — it runs until the empty is terminated at their designated return point.",
-"Think about what's still out: the chassis is rented by the day, and the SSL's per diem free days keep burning while the box sits.",
-"The 24-hour rule: follow up after 24 hours, but a day before ETA with no confirmation is an escalation to MK and Julianny — not a waiting game.",
-"Off-hire means the return location is different from pickup — get it from the carrier or overseas agent and make sure the trucker has it.",
-"A closed area is the terminal's own congestion — we're not responsible for that demurrage, but the LFD extension must be requested. It doesn't happen automatically.",
-"COD customers must be billed and paid BEFORE delivery — base rate + 3 days chassis + known accessorials. That's the whole point of the COD flag.",
-"Rail pickups need a pickup number from the carrier/co-loader, and the ETA only becomes real once the container is loaded onto the rail."];
+// Question bank: q = [phrasing A, phrasing B], opts[0] is always correct (shuffled at render), fb = explanation
+const BANK = [
+{q:["Which event stops the demurrage clock?","Demurrage stops accruing at which exact moment?"],opts:["The container outgates the terminal","The empty container is returned to the port","The consignee signs the POD"],fb:"Demurrage is a terminal charge — it ends the moment the container leaves terminal property at outgate."},
+{q:["A live unload takes 3.5 hours door to door with 2 free hours, then $85/hr. What's the billable waiting time?","The driver spends 3.5 hours at a live unload. Free time is 2 hours, $85/hr after. What does the customer owe in waiting time?"],opts:["1.5 hours — $127.50","3.5 hours — $297.50","Nothing — live unloads never bill waiting time"],fb:"3.5 hours minus 2 free = 1.5 billable hours at $85."},
+{q:["Customs is released but the freight hold is still active. Can you dispatch the trucker?","A container has one remaining hold but everything else is clear. Is it safe to send the driver?"],opts:["No — every hold must be released before pickup","Yes — customs is the only hold that matters","Yes, if it's before LFD"],fb:"All releases — freight, customs, fees — must be clear, or the driver gets turned away and bills a dry run."},
+{q:["When does the per diem clock stop?","What single event ends per diem charges on a container?"],opts:["When the empty is ingated at the designated return location","When the container is delivered to the consignee","When the customer pays the invoice"],fb:"Per diem is the steamship line's equipment charge — it runs until the empty is terminated at their designated return point."},
+{q:["On a drop, the container sits at the consignee for four days. Which charges keep accruing?","A dropped container has been sitting at the warehouse all week. What's still costing money?"],opts:["Chassis rental and per diem free time","Demurrage and driver waiting time","Nothing — a drop is free until the empty pickup"],fb:"Off-terminal means no demurrage, and no driver waits on a drop — but the chassis is rented daily and the per diem free days keep burning."},
+{q:["You sent a DO yesterday, no confirmation from the trucker, and the vessel's ETA is tomorrow. What do you do?","It's one day before ETA and the trucker still hasn't acknowledged the DO. Next move?"],opts:["Escalate to MK and Julianny to handle accordingly","Wait another 24 hours — the rule is to follow up, not panic","Send the DO again and assume it's covered"],fb:"24 hours with no confirmation = follow up; a day before ETA with no confirmation = escalate to MK and Julianny. Never sit on it."},
+{q:["A container is marked off-hire. What does that mean for the return?","What's the ops impact when a container is off-hire?"],opts:["It returns to a different location than pickup — get it from the carrier or overseas agent and make sure the trucker knows","The container can't be returned and stays with the customer","Per diem doesn't apply to off-hire containers"],fb:"Off-hire = different return location, provided by the carrier or overseas agent (usually beforehand). The trucker must know before rolling."},
+{q:["A container is stuck in a closed area during port congestion. Once it becomes available, what must you do?","Port congestion buried your container in a closed area for a week. When it's finally reachable, what's the required step?"],opts:["Get an LFD extension — we're not responsible for demurrage in this case","Pay the demurrage — it's part of the cost of congestion","Nothing — closed areas automatically extend the LFD"],fb:"Reach out to the port to get it moving, and once available push for the LFD extension — it only happens if we ask."},
+{q:["A COD customer's container is arriving. When and how do they get billed for trucking?","How does billing work for a customer flagged COD?"],opts:["Before delivery — base rate + 3 days chassis + known accessorials, paid before the truck moves","After delivery, once the final trucker invoice is in","Only if accessorial charges come up"],fb:"COD = billed and PAID before delivery: base + 3 days chassis + any known accessorials. The remainder is invoiced after delivery."},
+{q:["What's required to pick up from a rail port, and when is the rail ETA reliable?","Your shipment is moving by rail. What do you need for pickup, and when can you trust the ETA?"],opts:["A pickup number from the carrier/co-loader — and the ETA is only accurate once it's loaded on the rail","Just the DO — same as any terminal; ETA is reliable from booking","A terminal appointment number; ETA is reliable at vessel departure"],fb:"No pickup number, no rail pickup — and rail ETAs are guesses until the container is actually on the rail."},
+{q:["What is a Delivery Order (DO)?","In one line — what does the DO actually do?"],opts:["The official document authorizing release of the cargo — the terminal only releases to a trucker presenting it","The trucker's invoice for the delivery","The customs entry filed for the shipment"],fb:"The DO authorizes cargo release to the consignee or trucker. No DO, no release at the terminal."},
+{q:["When does a DO get issued?","At what point in the import process does the DO go out?"],opts:["At the time the arrival notice is sent","Only after the container is discharged","After customs clears"],fb:"The DO is issued when the arrival notice goes out — well before discharge, so delivery can be coordinated in time."},
+{q:["What's the last check before hitting send on a DO?","Right before a DO email goes out, what do you quickly review?"],opts:["The To: and CC: fields — make sure no wrong emails are in copy","The font formatting of the DO","Whether the vessel has departed origin"],fb:"One wrong address on a DO sends delivery details to the wrong party. Review To: and CC: every time."},
+{q:["There's no default delivery location for this POD and nothing in trucking requirements. What next?","The system shows no location or trucker for this POD. Where do you look?"],opts:["Check the booking for a communicated delivery address; otherwise request delivery info from the customer","Pick the nearest warehouse to the port","Hold the shipment until the customer complains"],fb:"Order of operations: trucking requirements → booking communication → ask the customer."},
+{q:["Multiple delivery locations under the same ref# — possible, and what do you do?","Can containers on one ref# deliver to different addresses?"],opts:["Yes — follow the trucking notes, or reach out to the account manager for help","No — one ref# always means one address","Yes, but only for Amazon shipments"],fb:"Different containers under the same ref# can have different delivery locations. Trucking notes first, account manager if unclear."},
+{q:["Shifl is handling delivery for a new location. What's the correct order?","Put the delivery setup steps in order when trucking goes through Shifl."],opts:["Quote from trucking team → quote customer → once confirmed, assign trucker → enter location in system → send DO","Send DO immediately → quote the customer after delivery → assign trucker","Assign trucker → send DO → quote customer once invoiced"],fb:"Quote in, quote out, confirmation, then assign, then system, then DO. Never dispatch before the customer confirms the quote."},
+{q:["You sent a DO and heard nothing for 24 hours. ETA is next week. What now?","A day has passed with no DO acknowledgment, but arrival is still far out. What's the move?"],opts:["Follow up with the trucker for confirmation","Escalate to MK and Julianny immediately","Nothing — no news is good news"],fb:"The 24-hour rule: follow up after 24 hours with no confirmation. Escalation is for when ETA is a day away."},
+{q:["What is the Last Free Day (LFD)?","Define LFD in plain terms."],opts:["The last day the container can sit at the terminal free after discharge — demurrage starts after it","The last day to file the customs entry","The day the empty must be returned to stop per diem"],fb:"Free days start at discharge; the LFD is the last of them. After it, the terminal charges demurrage daily."},
+{q:["What exactly is demurrage?","Who charges demurrage, and for what?"],opts:["The terminal's daily charge for a container sitting at the port past its free days","The steamship line's charge for keeping their container out too long","The trucker's charge for waiting at the warehouse"],fb:"Demurrage = terminal + past LFD. Don't confuse it with per diem (steamship line) or waiting time (trucker)."},
+{q:["What exactly is per diem?","Who charges per diem, and for what?"],opts:["The steamship line's daily charge for their container being out past its free days","The terminal's charge for storage past LFD","A fuel-related surcharge on the base rate"],fb:"Per diem = the steamship line's equipment charge, from outgate (after free days) until the empty is terminated."},
+{q:["Demurrage, per diem, waiting time — who charges each?","Three different clocks, three different bills. Who sends each: demurrage, per diem, waiting time?"],opts:["Terminal / steamship line / trucker","Steamship line / terminal / trucker","Trucker / terminal / steamship line"],fb:"Demurrage → terminal. Per diem → steamship line. Waiting time → trucker. Knowing who bills what is 80% of drayage ops."},
+{q:["What does it take to get a shipment freight released?","Freight release requires which two things?"],opts:["Freight paid to the carrier + OBL/MBL telex release","A terminal appointment + chassis","Customs entry + HBL telex"],fb:"Freight release = ocean freight paid plus the OBL/MBL telex release. Customs release is a separate track (HBL telex)."},
+{q:["What does customs release require?","Which combination gets the shipment customs released?"],opts:["Customs cleared + HBL telex release","Freight paid + OBL telex","Pier Pass paid + gate fee cleared"],fb:"Customs release = clearing customs plus the HBL telex release."},
+{q:["Where does Pier Pass (TMF) apply?","Which pickups carry the Traffic Mitigation Fee and Clean Truck Fund?"],opts:["Containers picked up from LA and Long Beach ports","All US ports","Rail ports only"],fb:"Pier Pass / TMF and the CTF apply to LA and Long Beach pickups."},
+{q:["Shifl pays a port fee on behalf of the shipment. What happens next?","If we cover a Pier Pass or gate fee ourselves, how is it handled?"],opts:["Add it to the Pier Pass list to be paid and onto the customer invoice with markup","Absorb it — port fees are our cost of doing business","Bill the trucker for it"],fb:"We pay it → it goes on the list AND onto the customer's invoice with markup. Fees we front don't disappear."},
+{q:["The customer (or trucker) is supposed to pay a port fee. What's our job?","A fee isn't ours to pay — what do we still have to do?"],opts:["Send a reminder if it's not paid by the time the container is discharged","Nothing — not our fee, not our problem","Pay it anyway to be safe"],fb:"Unpaid fee = container doesn't move. If it's not paid by discharge, we chase it."},
+{q:["When do you start tracking the shipment at the terminal?","At what point does daily terminal tracking begin?"],opts:["From the ETA","From the day the DO is sent","Only after the customer asks for an update"],fb:"From ETA: check freight and customs released, no fees pending, and whether it's discharged."},
+{q:["What does 'discharged' mean, and why does it matter?","Why is the discharge date such a big deal?"],opts:["The container is off the vessel — free time starts counting from here","The container has left the terminal on a truck","The freight has been unloaded at the warehouse"],fb:"Discharge = off the vessel and (once released) available for pickup. It starts the free days toward LFD."},
+{q:["The container just discharged. Who do you tell, and what do you tell them?","Discharge posted this morning — what's the immediate communication?"],opts:["Everyone on the DO — customer and trucker — that it's discharged, plus the LFD","Only the trucker; the customer doesn't need port details","No one — wait until it's picked up"],fb:"Notify all DO parties of discharge AND the LFD, then confirm the pickup date with the trucker."},
+{q:["When is direct delivery the right path?","Straight from port to door — when does that work?"],opts:["When delivery timing is flexible and the customer can accept anytime (usually afternoon)","Only for COD customers","Whenever the terminal is congested"],fb:"Direct delivery works when the customer's dock is flexible — it's the cleanest and cheapest path."},
+{q:["When does a pre-pull happen, and what does it typically cost?","The trucker can't deliver straight from the port. What's the play and the price?"],opts:["Trucker takes it to their yard and delivers next day — pre-pull charge + 1 day storage in most cases","The container waits at the terminal — demurrage + gate fee","The delivery is cancelled and rebooked next week"],fb:"Late appointment or after-hours warehouse → pre-pull to the yard, deliver next day. Expect the pre-pull charge plus a day of storage (varies by trucker)."},
+{q:["A pre-pull is needed and it costs money. What must happen before you tell the trucker yes?","What's the golden rule before authorizing any extra charge — pre-pull, drop, storage?"],opts:["Communicate the charge to the customer AND wait for their confirmation — no reply means no authorization","Tell the trucker yes, then let the customer know it happened","Add it to the invoice and see if anyone notices"],fb:"Every extra charge is communicated BEFORE it occurs, and the customer confirms BEFORE the trucker gets a yes. Communicated is not confirmed."},
+{q:["You told the customer a pre-pull is needed; they haven't replied and LFD is tomorrow. Do you authorize it?","LFD is tomorrow, the customer hasn't confirmed the pre-pull. What do you do?"],opts:["No — chase the customer hard and escalate internally, but don't authorize charges on their behalf","Yes — it's cheaper than demurrage, they'll thank you later","Yes, but only bill half the charge"],fb:"No confirmation = no authorization. Push the customer, escalate — but a charge they never approved becomes our problem."},
+{q:["How much free time does a driver typically give on a live unload?","On a live unload, when does waiting time start billing?"],opts:["After 2 free hours","After 30 minutes","There's no free time on live unloads"],fb:"Usually 2 free hours before the driver charges waiting time. Get in/out times in writing."},
+{q:["What is a drop?","How does a drop work at the delivery location?"],opts:["The trucker leaves the container at the delivery location until the customer confirms it's ready for pickup","The driver waits while the warehouse unloads","The container is returned to the terminal unopened"],fb:"On a drop, the container sits at the customer's location until they confirm it's empty and ready — while chassis and per diem free time keep running."},
+{q:["The container was picked up. Beyond confirming it, what must you communicate and record?","Pickup confirmed — what are the two follow-through steps?"],opts:["Tell the customer AND trucker how many free days before per diem starts, and update the system with the free days","Nothing until delivery is confirmed","Send the final invoice"],fb:"Free days get communicated to both parties and entered in the system the day of pickup — everyone should know the per diem deadline on day one."},
+{q:["How do you close out the delivery step?","The truck should have delivered this morning. What's your job?"],opts:["Confirm with the receiver that it was delivered at the pre-arranged time","Assume it delivered unless someone complains","Ask the steamship line for a delivery status"],fb:"Confirm with the receiver — don't assume. Verified delivery starts the empty-return clock."},
+{q:["After a live unload, when should the empty be returned?","What's the return window for an empty after a live delivery?"],opts:["Within 24–48 hours after delivery","Within 2 weeks","Same hour as delivery, always"],fb:"Live unload empties go back within 24–48 hours — before per diem free days burn down."},
+{q:["The container was dropped at the customer. What's the ops follow-up loop?","A dropped box is sitting at the warehouse. What are you doing every day?"],opts:["Remind the customer to unload within free time, and follow with the trucker to return the empty before per diem starts","Wait for the customer to call when it's empty","Bill per diem in advance just in case"],fb:"Two-sided follow-up: customer unloads in free time, trucker returns before per diem. Neither happens by itself."},
+{q:["There are no return appointments available for the empty. What do you do?","The trucker can't get a return appointment and per diem is looming. Moves?"],opts:["Keep following with the trucker, make the customer aware so there are no surprise charges, and reach out to the terminal to push for an appointment","Nothing — appointments are the trucker's problem","Tell the customer to store the container permanently"],fb:"Push the trucker, warn the customer, and go to the terminal directly. Document every attempt — that's your per diem dispute file."},
+{q:["What is the EIR and why do you care?","Which document proves the empty was actually terminated?"],opts:["The Equipment Interchange Receipt — the gate record with timestamp that proves outgate and termination","The customer's signed POD","The trucker's rate confirmation"],fb:"The EIR is the gate transaction record. When a per diem invoice shows up months later, the termination EIR wins the dispute."},
+{q:["What does 'terminated' mean for a container?","When is a container officially terminated?"],opts:["The empty has been ingated at the designated return location — all clocks stop","The freight has been delivered to the customer","The customer has paid their invoice"],fb:"Terminated = empty ingated at the right return point, proven by the EIR. It's a document, not a feeling."},
+{q:["Trucking went through Shifl. What are the billing steps at close-out?","The move is done and Shifl handled trucking. Walk the billing."],opts:["Get the trucker's invoice → enter the bill into the system → create the customer's trucking invoice","Invoice the customer first, then find the trucker's bill later","Forward the trucker's invoice to the customer as-is"],fb:"Trucker invoice in, bill entered, customer invoice out — with markup, never as-is."},
+{q:["How do you determine the markup on a customer's trucking invoice?","Where does the trucking markup come from?"],opts:["Check for a predetermined markup for this customer; otherwise follow the markup formula on the shared sheet","Whatever feels right that day","Always exactly 10%"],fb:"Predetermined customer markup first; if there isn't one, the shared-sheet formula decides."},
+{q:["Which customers get labeled COD by accounting?","What puts a customer on the COD list?"],opts:["One-time customers, customers without insurance coverage/terms, or customers with a large overdue balance","Any customer shipping over 10 containers","Only international customers"],fb:"COD = one-timers, no coverage/terms, or big overdue balances. Accounting flags them; ops enforces bill-before-delivery."},
+{q:["A COD customer paid the advance trucking invoice. Accessorials came up after delivery. Now what?","Post-delivery accessorials on a COD account — how are they billed?"],opts:["Send an additional invoice with the remaining accessorial charges (or update the same one, per customer preference)","Waive them — COD customers already paid","Deduct them from the trucker's pay"],fb:"The advance invoice covers the majority; the remainder goes on a follow-up invoice (or the same one updated) after delivery."},
+{q:["When do you request the FBA# and delivery location for an Amazon shipment?","Amazon shipment on the water — when do you collect the FBA info?"],opts:["At the time of departure from origin — so the trucker can book the appointment well in advance","At arrival — no point earlier","After the container is picked up"],fb:"Departure, not arrival. Amazon appointments slip in busy seasons — early info is the whole defense."},
+{q:["Who's our default Amazon trucker, and what's not included in their rate?","Czechmate handles our Amazon moves. What do they charge on top of the all-in rate?"],opts:["Czechmate — chassis at $40/day, and waiting time after 2 free hours at $75/hr capped at $600","Czechmate — nothing, their rate covers everything","Any trucker — Amazon assigns them"],fb:"Czechmate is the default. All-inclusive except chassis ($40/day) and overtime ($75/hr after 2 free, capped at $600 — max 8 hours)."},
+{q:["When do you know in advance that a stop-off charge will apply?","What scenario produces a stop-off charge you can quote upfront?"],opts:["An off-hire container returning to a different location from where the chassis returns — if the line or co-loader tells us beforehand, we quote it in advance","Every rail shipment","Any live unload over 2 hours"],fb:"Off-hire returns can split the container and chassis to different locations = stop-off. Known beforehand → charged in advance."},
+{q:["What's a dry run, and who pays for it?","The driver showed up and couldn't get the container. What just happened on the cost side?"],opts:["A wasted trip billed by the trucker — usually caused by a hold, wrong location, or a box that wasn't ready","A free retry — truckers don't charge for failed attempts","A terminal fee for congestion"],fb:"A dry run is a billed wasted trip. Prevented by same-day availability checks and verified return locations."}
+];
+
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;}}
+
+function renderQuiz(){
+  const wrap = document.getElementById('quizQs');
+  if(!wrap) return;
+  const win = Math.floor(Date.now()/1800000); // 30-minute window
+  const rng = mulberry32(win);
+  const idx = BANK.map((_,i)=>i);
+  for(let i=idx.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
+  const pick = idx.slice(0,QUIZ_TOTAL);
+  wrap.innerHTML = pick.map((b,pos)=>{
+    const item = BANK[b];
+    const phr = item.q[(win + b) % item.q.length];
+    const opts = item.opts.map((t,oi)=>({t,c:oi===0?'1':'0'}));
+    for(let i=opts.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[opts[i],opts[j]]=[opts[j],opts[i]];}
+    return '<div class="q" data-q="'+pos+'" data-fb="'+item.fb.replace(/"/g,'&quot;')+'"><div class="q-title">'+(pos+1)+'. '+phr+'</div>'+opts.map(o=>'<button class="opt" data-c="'+o.c+'">'+o.t+'</button>').join('')+'<div class="q-fb"></div></div>';
+  }).join('');
+}
 
 const AUDIO = {
   0:'audio/stage0-intro.mp3',
@@ -883,6 +867,7 @@ function goTo(i){
   closePop();
   if(i===0){answered=new Set();chosen={};score=0;resultsSent=false;resetQuiz();resetChecks();}
   cur = i;
+  if(i === STEPS.length-2 && answered.size === 0) renderQuiz();
   visited.add(i);
   const sv = store.get(); sv.step = i; sv.visited = [...visited]; store.set(sv);
   document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
@@ -958,18 +943,13 @@ document.addEventListener('click', e=>{
     });
     if(!good) opt.classList.add('wrong');
     const fb = q.querySelector('.q-fb');
-    fb.textContent = good ? CORRECT_FB[+q.dataset.q] : WRONG_FB[+q.dataset.q];
+    fb.textContent = (good ? '✓ ' : '✗ ') + q.dataset.fb;
     fb.classList.add('show', good?'good':'bad');
     if(answered.size === QUIZ_TOTAL) sendResults();
   }
 });
 
-function resetQuiz(){
-  document.querySelectorAll('.q').forEach(q=>{
-    q.querySelectorAll('.opt').forEach(o=>{o.disabled=false;o.classList.remove('correct','wrong')});
-    const fb=q.querySelector('.q-fb'); fb.className='q-fb'; fb.textContent='';
-  });
-}
+function resetQuiz(){ renderQuiz(); }
 function resetChecks(){
   document.querySelectorAll('.check li').forEach(l=>l.classList.remove('done'));
 }
