@@ -183,6 +183,10 @@ button:active{transform:scale(.98)}
 .step-count{font-family:'IBM Plex Mono';font-size:12px;color:var(--muted)}
 
 /* quiz */
+.qname{margin:14px 0 22px}
+.qname label{display:block;font-family:'Barlow Condensed';font-weight:600;font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.qname input{width:100%;max-width:340px;font-family:'Barlow';font-size:16px;padding:11px 14px;border:1px solid var(--line);border-radius:8px;color:var(--ink);background:#fff}
+.qname input:focus{outline:none;border-color:var(--orange)}
 .q{margin-bottom:26px}
 .q-title{font-weight:600;color:var(--ink);margin-bottom:10px;font-size:16px}
 .opt{
@@ -500,7 +504,8 @@ const STEPS = [
 <div class="eyebrow">Final Stage · Knowledge Check</div>
 <h1>Prove It</h1>
 <div class="card" id="quizCard">
-<p>Seven questions. Pick an answer to see instant feedback — your score posts at the end.</p>
+<p>Ten questions. <strong>Enter your name first</strong> — your answers lock as soon as you pick them, and your results go straight to MK when you finish.</p>
+<div class="qname"><label for="quizName">Your name</label><input type="text" id="quizName" placeholder="First and last name" autocomplete="name"></div>
 <div class="q" data-q="0">
   <div class="q-title">1. Which event stops the demurrage clock?</div>
   <button class="opt" data-c="0">The empty container is returned to the port</button>
@@ -550,6 +555,27 @@ const STEPS = [
   <button class="opt" data-c="0">Per diem doesn't apply to off-hire containers</button>
   <div class="q-fb"></div>
 </div>
+<div class="q" data-q="7">
+  <div class="q-title">8. A container is stuck in a closed area at the port during congestion. Once it finally becomes available, what must you do?</div>
+  <button class="opt" data-c="0">Pay the demurrage — it's part of the cost of congestion</button>
+  <button class="opt" data-c="1">Get an LFD extension — we are not responsible for demurrage caused by a closed area</button>
+  <button class="opt" data-c="0">Nothing — closed areas automatically extend the LFD</button>
+  <div class="q-fb"></div>
+</div>
+<div class="q" data-q="8">
+  <div class="q-title">9. A COD customer's container is arriving. When and how do they get billed for trucking?</div>
+  <button class="opt" data-c="0">After delivery, once the final trucker invoice is in</button>
+  <button class="opt" data-c="1">Before delivery — base rate + 3 days chassis + any known accessorials, and payment confirmed before the truck moves</button>
+  <button class="opt" data-c="0">Only if accessorial charges come up</button>
+  <div class="q-fb"></div>
+</div>
+<div class="q" data-q="9">
+  <div class="q-title">10. What's required to pick up a container from a rail port — and when is the rail ETA actually reliable?</div>
+  <button class="opt" data-c="0">Just the DO — same as any terminal; the ETA is reliable from booking</button>
+  <button class="opt" data-c="1">A pickup number from the carrier/co-loader — and the ETA is only accurate once the container is loaded onto the rail</button>
+  <button class="opt" data-c="0">A terminal appointment number; the ETA is reliable at vessel departure</button>
+  <div class="q-fb"></div>
+</div>
 </div>`},
 
 { pos:'96%', node:4, clocks:['stop','stop','stop'], html:`
@@ -558,6 +584,7 @@ const STEPS = [
 <div class="card" style="text-align:center;padding:40px 22px">
   <div class="badge">Module 02 Complete</div>
   <div class="score-big" id="scoreOut">–</div>
+  <p style="max-width:none;margin-top:6px;font-weight:600" id="sendStatus"></p>
   <p style="max-width:none;margin-top:8px" id="scoreMsg"></p>
   <p style="max-width:none;color:var(--muted);font-size:14px">Demurrage stops at outgate. Detention needs timestamps. Per diem stops at termination — and termination is a document, not a feeling.</p>
   <button class="btn-next" onclick="goTo(0)" style="margin-top:14px">Restart Module</button>
@@ -570,14 +597,20 @@ const CORRECT_FB = ["Right — the outgate timestamp ends demurrage; the box has
 "Right — termination at the designated return point is the only thing that stops per diem.",
 "Correct — the box is off-terminal (no demurrage) and no driver is waiting (no detention), but the chassis and the SSL's free-time clock keep running.",
 "Correct — 24 hours with no confirmation means follow up; a day before ETA with no confirmation means escalate to MK and Julianny. Never sit on it.",
-"Right — off-hire means a different return location, from the carrier or overseas agent. The trucker must know before rolling, or it's a dry run."];
+"Right — off-hire means a different return location, from the carrier or overseas agent. The trucker must know before rolling, or it's a dry run.",
+"Correct — reach out to the port to get it moving, and once available, push for the LFD extension. Closed-area demurrage is not ours to eat — but the extension only happens if we ask.",
+"Correct — COD means billed and PAID before delivery: base + 3 days chassis + known accessorials. The remainder gets invoiced after delivery.",
+"Right — no pickup number, no rail pickup. And treat rail ETAs as guesses until the container is actually on the rail."];
 const WRONG_FB = ["Not quite — demurrage is a terminal charge; it ends at outgate, not at delivery or empty return.",
 "Check the free time — the first 2 hours are free, so only 1.5 hours bill.",
 "No — all holds (customs, freight, terminal, exam) must be clear before dispatch.",
 "Per diem is the steamship line's equipment charge — it runs until the empty is terminated at their designated return point.",
 "Think about what's still out: the chassis is rented by the day, and the SSL's per diem free days keep burning while the box sits.",
 "The 24-hour rule: follow up after 24 hours, but a day before ETA with no confirmation is an escalation to MK and Julianny — not a waiting game.",
-"Off-hire means the return location is different from pickup — get it from the carrier or overseas agent and make sure the trucker has it."];
+"Off-hire means the return location is different from pickup — get it from the carrier or overseas agent and make sure the trucker has it.",
+"A closed area is the terminal's own congestion — we're not responsible for that demurrage, but the LFD extension must be requested. It doesn't happen automatically.",
+"COD customers must be billed and paid BEFORE delivery — base rate + 3 days chassis + known accessorials. That's the whole point of the COD flag.",
+"Rail pickups need a pickup number from the carrier/co-loader, and the ETA only becomes real once the container is loaded onto the rail."];
 
 const AUDIO = {
   0:'audio/stage0-intro.mp3',
@@ -635,12 +668,48 @@ const BOTTOM = [
 "Find out where the steamship line wants its empty back TODAY — it changes all the time.",
 "Empty returned + paper proof in the file = job actually done.",
 "COD bills before the truck moves. Amazon appointments get booked at departure, not arrival.",
-"Seven questions. Prove you've got the clocks down.",
+"Ten questions. Prove you've got the clocks down — your results go straight to MK.",
 null];
 
 let cur = 0;
 let answered = new Set();
+let chosen = {};
 let score = 0;
+let resultsSent = false;
+const QUIZ_TOTAL = 10;
+const RESULTS_EMAIL = 'mk@shifl.com';
+
+function sendResults(){
+  if(resultsSent) return;
+  resultsSent = true;
+  const name = (document.getElementById('quizName')||{}).value || 'Unknown';
+  const payload = {
+    _subject: 'Training Module 02 results — '+name.trim()+' — '+score+'/'+QUIZ_TOTAL,
+    _template: 'table',
+    Name: name.trim(),
+    Score: score+' / '+QUIZ_TOTAL,
+    Completed: new Date().toLocaleString(),
+    Module: '02 — DO to Container Termination'
+  };
+  Object.keys(chosen).sort((a,b)=>+a-+b).forEach(k=>{
+    const c = chosen[k];
+    payload['Q'+(+k+1)+' — '+c.question] = (c.correct?'✓ CORRECT — ':'✗ WRONG — ')+c.answer;
+  });
+  const status = document.getElementById('sendStatus');
+  if(status) status.textContent = 'Sending your results to MK…';
+  fetch('https://formsubmit.co/ajax/'+RESULTS_EMAIL, {
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body: JSON.stringify(payload)
+  }).then(r=>r.json()).then(()=>{
+    if(status) status.textContent = '✓ Results sent to MK ('+name.trim()+' — '+score+'/'+QUIZ_TOTAL+')';
+  }).catch(()=>{
+    if(status){
+      const body = encodeURIComponent('Module 02 results\nName: '+name+'\nScore: '+score+'/'+QUIZ_TOTAL+'\n\n'+Object.keys(chosen).sort((a,b)=>+a-+b).map(k=>'Q'+(+k+1)+': '+(chosen[k].correct?'CORRECT':'WRONG')+' — '+chosen[k].answer).join('\n'));
+      status.innerHTML = 'Auto-send failed — <a href="mailto:'+RESULTS_EMAIL+'?subject=Training Module 02 results — '+encodeURIComponent(name)+'&body='+body+'">click here to email your results to MK</a>';
+    }
+  });
+}
 const main = document.getElementById('steps');
 const player = new Audio();
 let playingStep = null;
@@ -811,7 +880,7 @@ function navHTML(i){
 function goTo(i){
   stopAudio();
   closePop();
-  if(i===0){answered=new Set();score=0;resetQuiz();resetChecks();}
+  if(i===0){answered=new Set();chosen={};score=0;resultsSent=false;resetQuiz();resetChecks();}
   cur = i;
   visited.add(i);
   const sv = store.get(); sv.step = i; sv.visited = [...visited]; store.set(sv);
@@ -841,10 +910,10 @@ function goTo(i){
   document.getElementById('progBar').style.width = (i/(STEPS.length-1)*100)+'%';
   // score screen
   if(i === STEPS.length-1){
-    document.getElementById('scoreOut').textContent = score+' / 7';
+    document.getElementById('scoreOut').textContent = score+' / '+QUIZ_TOTAL;
     document.getElementById('scoreMsg').textContent =
-      score===7 ? 'Perfect score. You can run this move.' :
-      score>=5 ? 'Solid — review the stages you missed and take the check again.' :
+      score===QUIZ_TOTAL ? 'Perfect score. You can run this move.' :
+      score>=7 ? 'Solid — review the stages you missed and take the check again.' :
       'Worth a second pass. Restart the module and watch the clocks panel as you go.';
   }
   window.scrollTo({top:0, behavior:'smooth'});
@@ -866,9 +935,22 @@ document.addEventListener('click', e=>{
   if(opt && !opt.disabled){
     const q = opt.closest('.q');
     if(answered.has(q.dataset.q)) return;
+    const nameEl = document.getElementById('quizName');
+    if(nameEl && !nameEl.value.trim()){
+      nameEl.focus();
+      nameEl.style.borderColor = 'var(--red)';
+      nameEl.placeholder = 'Enter your name before answering';
+      window.scrollTo({top:0,behavior:'smooth'});
+      return;
+    }
     answered.add(q.dataset.q);
     const good = opt.dataset.c === '1';
     if(good) score++;
+    chosen[q.dataset.q] = {
+      question: q.querySelector('.q-title').textContent.trim(),
+      answer: opt.textContent.trim(),
+      correct: good
+    };
     q.querySelectorAll('.opt').forEach(o=>{
       o.disabled = true;
       if(o.dataset.c==='1') o.classList.add('correct');
@@ -877,6 +959,7 @@ document.addEventListener('click', e=>{
     const fb = q.querySelector('.q-fb');
     fb.textContent = good ? CORRECT_FB[+q.dataset.q] : WRONG_FB[+q.dataset.q];
     fb.classList.add('show', good?'good':'bad');
+    if(answered.size === QUIZ_TOTAL) sendResults();
   }
 });
 
