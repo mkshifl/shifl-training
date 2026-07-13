@@ -341,7 +341,7 @@ const STEPS = [
 <p><strong>What this module covers.</strong> A Delivery Order (DO) is the official document we issue authorizing release of the cargo — the terminal will only release a container to a trucker who presents it. Sending it is a simple step, but everything after it is where deliveries are won or lost. From the moment the DO goes out until the empty container is terminated back at the port, the Import team is managing three running cost clocks, a chain of releases and appointments, and a paper trail that has to close cleanly.</p>
 <p>By the end of this walkthrough you'll be able to follow one container — <span class="mono">SHFU 402118 6</span> — through every stage in the tracker above, and know exactly what Ops is responsible for at each one.</p>
 <div class="callout"><b>The three clocks</b><p>Watch the panel above as you move through the module. <strong>Demurrage</strong> (terminal charges the cargo owner for the box sitting at the port), <strong>driver detention</strong> (carrier charges for wait time at delivery), and <strong>per diem</strong> (steamship line charges for keeping their container out) each start and stop at different events. Knowing those trigger events is 80% of drayage ops.</p></div>
-<div class="callout red"><b>The golden rule on charges</b><p><strong>Every extra charge — pre-pull, drop, yard storage, waiting time, overweight, stop-off, any accessorial — MUST be communicated to the customer BEFORE it occurs.</strong> A customer who approved a charge pays it; a customer who's surprised by one disputes it. This rule applies at every stage of this module.</p></div>
+<div class="callout red"><b>The golden rule on charges</b><p><strong>Every extra charge — pre-pull, drop, yard storage, waiting time, overweight, stop-off, any accessorial — MUST be communicated to the customer BEFORE it occurs, and you WAIT for the customer's confirmation before telling the trucker yes.</strong> Communicated is not confirmed — no reply means no authorization. A customer who approved a charge pays it; a customer who's surprised by one disputes it. This rule applies at every stage of this module.</p></div>
 <p>Click any checklist item as you go — it's how you'll work in real life, so practice it here.</p>
 </div>`},
 
@@ -391,7 +391,7 @@ const STEPS = [
 <tr><td>Direct delivery</td><td>Delivery time is flexible and the customer can accept anytime (usually afternoon)</td><td>Cleanest and cheapest — straight from port to door</td></tr>
 <tr><td>Pre-pull</td><td>Trucker can't deliver straight from the port — late appointment, pickup after warehouse hours</td><td>Pre-pull charge + 1 day yard storage in most cases (varies by trucker)</td></tr>
 </table>
-<div class="callout red"><b>Communicate BEFORE the charge exists</b><p>A pre-pull and its storage day are extra charges — <strong>the customer must be told and approve before the container is pre-pulled, never after.</strong> Do the math out loud with the customer <em>before</em> LFD. A pre-pull authorized on the last free day is a win; the same email one day later is an apology plus a demurrage invoice.</p></div>
+<div class="callout red"><b>Communicate BEFORE the charge exists</b><p>A pre-pull and its storage day are extra charges — <strong>tell the customer, then WAIT for their confirmation before giving the trucker the go-ahead. No confirmation = no pre-pull.</strong> Do the math out loud with the customer <em>before</em> LFD. A pre-pull authorized on the last free day is a win; the same email one day later is an apology plus a demurrage invoice.</p></div>
 <div class="callout green"><b>Closed area? Get the LFD extended</b><p>During port congestion a container can sit in a closed area where no one can touch it. Reach out to the port to get it moving — and once it's available, <strong>get an LFD extension</strong>. We are not responsible for demurrage caused by the terminal's own congestion, but only if we push for the extension.</p></div>
 </div>`},
 
@@ -435,7 +435,7 @@ const STEPS = [
 <p>The driver waits while the consignee unloads. There are usually <strong>2 free hours</strong> before the driver charges waiting time. Ops should get <strong>in/out times from the driver in writing</strong> — arrival at the door, unload start, departure. No timestamps, no defensible detention invoice.</p>
 <h2>Drop</h2>
 <p>The trucker drops the container at the delivery location until the customer confirms it's ready for pickup. No waiting time — but now the box and chassis sit there for days:</p>
-<div class="callout"><b>What keeps running on a drop</b><p><strong>Chassis rental</strong> (daily) and the <strong>per diem free-time clock</strong> both keep going while the container sits at the warehouse. A "free" drop that sits five days can cost more than paid detention. Agree the pickup date for the empty at the time of the drop, and diarize it. <strong>And like every extra charge — the customer hears about drop fees, chassis days, and waiting time BEFORE they start accruing, not on the invoice.</strong></p></div>
+<div class="callout"><b>What keeps running on a drop</b><p><strong>Chassis rental</strong> (daily) and the <strong>per diem free-time clock</strong> both keep going while the container sits at the warehouse. A "free" drop that sits five days can cost more than paid detention. Agree the pickup date for the empty at the time of the drop, and diarize it. <strong>And like every extra charge — the customer hears about drop fees, chassis days, and waiting time BEFORE they start accruing, and confirms them before you tell the trucker yes. Not on the invoice, and not on their behalf.</strong></p></div>
 <h2>Either way</h2>
 <ul class="check">
 <li><span class="tick"></span><span><b>Confirm with the receiver</b> — the container was delivered at the pre-arranged time; don't assume, verify</span></li>
@@ -469,7 +469,7 @@ const STEPS = [
 <ul class="check">
 <li><span class="tick"></span><span><b>Termination EIR / interchange</b> — the proof the empty went back, with date and time. If a per diem invoice shows up months later, this document wins the dispute</span></li>
 <li><span class="tick"></span><span><b>Signed POD</b> — attached to the customer file</span></li>
-<li><span class="tick"></span><span><b>Accessorial backup</b> — waiting time records, pre-pull authorization, yard storage days, chassis days — with proof the customer was told <em>before</em> each charge occurred. If that approval trail doesn't exist, the charge becomes our problem</span></li>
+<li><span class="tick"></span><span><b>Accessorial backup</b> — waiting time records, pre-pull authorization, yard storage days, chassis days — with proof the customer was told AND confirmed <em>before</em> each charge occurred. If that confirmation trail doesn't exist, the charge becomes our problem</span></li>
 </ul>
 <h2>Billing the customer <span style="font-size:14px;color:var(--muted)">(when trucking is done through Shifl)</span></h2>
 <ul class="check">
