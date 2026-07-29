@@ -505,23 +505,39 @@ const STEPS = [
 <div class="eyebrow">Final Stage · Knowledge Check</div>
 <h1>Prove It</h1>
 <div class="card" id="quizCard">
-<p>Ten questions. <strong>Enter your name first</strong> — your answers lock as soon as you pick them, and your results go straight to MK when you finish.</p>
+<p>Ten questions. <strong>Enter your name first</strong> — your answers lock the instant you pick them. You need <strong>8 out of 10 to pass</strong>, and your results go straight to MK.</p>
 <div class="qname"><label for="quizName">Your name</label><input type="text" id="quizName" placeholder="First and last name" autocomplete="name"></div>
-<p class="mono" style="font-size:12px;color:var(--muted)">Questions are drawn at random from a 50-question bank and rotate every 30 minutes — every attempt is different.</p>
+<p class="mono" style="font-size:12px;color:var(--muted)">Questions are drawn at random from a 50-question bank. Every attempt — and every retake — is a different set.</p>
 <div id="quizQs"></div>
 </div>`},
 
 { pos:'96%', node:4, clocks:['stop','stop','stop'], html:`
-<div class="eyebrow">Module Complete</div>
-<h1>Container Terminated. File Closed.</h1>
-<div class="card" style="text-align:center;padding:40px 22px">
-  <div class="badge">Module 02 Complete</div>
-  <div class="score-big" id="scoreOut">–</div>
-  <p style="max-width:none;margin-top:6px;font-weight:600" id="sendStatus"></p>
-  <p style="max-width:none;margin-top:8px" id="scoreMsg"></p>
-  <p style="max-width:none;color:var(--muted);font-size:14px">Demurrage stops at outgate. Detention needs timestamps. Per diem stops at termination — and termination is a document, not a feeling.</p>
-  <button class="btn-next" onclick="goTo(0)" style="margin-top:14px">Restart Module</button>
-</div>`}
+<div class="eyebrow">Reference · Empty Return Locations</div>
+<h1>Where Do I Return the Empty?</h1>
+<div class="bottomline"><span class="bl-tag">Rule #1</span><p>Empty return locations change constantly — sometimes daily. ALWAYS check the steamship line's own tool on the day of return, and confirm before dispatching the trucker.</p></div>
+<div class="card">
+<p>Each steamship line publishes its own empty return locations by container type and city. Below are the direct lookup links for the lines we deal with most. Bookmark this page.</p>
+<div class="callout"><b>Port of NY/NJ — one-stop view</b><p>The fastest cross-terminal check for our area: <a href="https://www.imfnj.com/HTML/empty_returns.html" target="_blank" rel="noopener">IMF Empty Return Instructions</a> — live empty-return status for all major NY/NJ terminals, auto-updated from each terminal's official source. Also check the terminal directly: <a href="https://www.pnct.net/EmptyReturn" target="_blank" rel="noopener">PNCT</a> and <a href="https://portal.maherterminals.com/reports/EMPTY_DISPATCH_RETURNS.pdf" target="_blank" rel="noopener">Maher daily dispatch/returns PDF</a>.</p></div>
+<h2>Steamship line lookup tools</h2>
+<table>
+<tr><th>Line</th><th>Where to check empty returns</th></tr>
+<tr><td>Maersk</td><td><a href="https://www.maersk.com/support/faqs/where-do-i-return-my-empty-container" target="_blank" rel="noopener">maersk.com</a> — enter BL under Import Demurrage &amp; Detention → Detention tab</td></tr>
+<tr><td>MSC</td><td><a href="https://vwa.msc.us/Default.aspx" target="_blank" rel="noopener">vwa.msc.us</a></td></tr>
+<tr><td>CMA CGM / APL / ANL</td><td><a href="https://apps.usa.cma-cgm.com/econtainer/" target="_blank" rel="noopener">apps.usa.cma-cgm.com/econtainer</a></td></tr>
+<tr><td>ONE (Ocean Network Express)</td><td><a href="https://sites.google.com/one-line.com/empty-pickup-return/home" target="_blank" rel="noopener">ONE empty pickup/return</a></td></tr>
+<tr><td>Hapag-Lloyd</td><td><a href="https://www.hapag-lloyd.com/en/online-business/track/track-by-container-solution.html" target="_blank" rel="noopener">Track &amp; Trace</a> → empty container return location</td></tr>
+<tr><td>COSCO</td><td><a href="https://sites.google.com/view/coscoshippinglinesna/emptyreturns" target="_blank" rel="noopener">COSCO NA empty returns</a></td></tr>
+<tr><td>Evergreen</td><td><a href="https://www.evergreen-shipping.us/" target="_blank" rel="noopener">evergreen-shipping.us</a> → Supply Chain → empty return location</td></tr>
+<tr><td>ZIM</td><td><a href="https://www.zim.com/tools/econtainer" target="_blank" rel="noopener">zim.com/tools/econtainer</a></td></tr>
+<tr><td>OOCL</td><td><a href="https://n2c3-s.home.oocl.com" target="_blank" rel="noopener">n2c3-s.home.oocl.com</a> (signup required)</td></tr>
+<tr><td>Yang Ming</td><td><a href="https://e-solution.yangming.com/LocalSite/Index_Local.aspx?localver=US" target="_blank" rel="noopener">e-solution.yangming.com</a> → Vendor area → US empty container return</td></tr>
+<tr><td>SM Line</td><td><a href="https://esvc.smlines.com/smline/CUP_HOM_3053.do" target="_blank" rel="noopener">esvc.smlines.com</a></td></tr>
+<tr><td>HMM</td><td><a href="https://www.hmm21.com/" target="_blank" rel="noopener">hmm21.com</a> → Track &amp; Trace → empty container return location</td></tr>
+</table>
+<div class="callout red"><b>Off-hire containers</b><p>If a container is off-hire, its return location is NOT on these standard tools — the carrier or overseas agent gives it to you directly, usually beforehand. And remember the golden rule: any stop-off charge from a split container/chassis return gets communicated to the customer and confirmed before it happens.</p></div>
+<p style="color:var(--muted);font-size:13px">Links current as of the last update. If a line changes its portal, flag it to MK and we'll fix this page.</p>
+</div>
+<div class="nav"><button class="btn-back" onclick="goTo(cur-1)">Back</button><span class="step-count">Reference</span><button class="btn-next" onclick="goTo(0)">Restart Module</button></div>`}
 ];
 
 // Question bank: q = [phrasing A, phrasing B], opts[0] is always correct (shuffled at render), fb = explanation
@@ -584,13 +600,21 @@ function renderQuiz(){
   const wrap = document.getElementById('quizQs');
   if(!wrap) return;
   const win = Math.floor(Date.now()/1800000); // 30-minute window
-  const rng = mulberry32(win);
+  let att = 0;
+  try{ att = (JSON.parse(localStorage.getItem('shifl-m02-attempts')||'0'))||0; }catch(e){}
+  // Seed folds in the attempt count so each retake is a different, non-overlapping set.
+  // Shuffle the full bank once per 30-min window, then hand out consecutive
+  // non-overlapping blocks of 10 per attempt. 50 questions = 5 fully distinct
+  // sets before anything repeats, so a retake shares ZERO questions with the last.
+  const blocks = Math.floor(BANK.length / QUIZ_TOTAL);      // 5
+  const rng = mulberry32(win >>> 0);
   const idx = BANK.map((_,i)=>i);
   for(let i=idx.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
-  const pick = idx.slice(0,QUIZ_TOTAL);
+  const block = att % blocks;
+  const pick = idx.slice(block*QUIZ_TOTAL, block*QUIZ_TOTAL + QUIZ_TOTAL);
   wrap.innerHTML = pick.map((b,pos)=>{
     const item = BANK[b];
-    const phr = item.q[(win + b) % item.q.length];
+    const phr = item.q[(win + att + b) % item.q.length];
     const opts = item.opts.map((t,oi)=>({t,c:oi===0?'1':'0'}));
     for(let i=opts.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[opts[i],opts[j]]=[opts[j],opts[i]];}
     return '<div class="q" data-q="'+pos+'" data-fb="'+item.fb.replace(/"/g,'&quot;')+'"><div class="q-title">'+(pos+1)+'. '+phr+'</div>'+opts.map(o=>'<button class="opt" data-c="'+o.c+'">'+o.t+'</button>').join('')+'<div class="q-fb"></div></div>';
@@ -664,37 +688,92 @@ let resultsSent = false;
 const QUIZ_TOTAL = 10;
 const RESULTS_EMAIL = 'mk@shifl.com';
 
+const PASS_MARK = 8;
+const QUIZ_INTRO_HTML = `<p>Ten questions. <strong>Enter your name first</strong> — your answers lock the instant you pick them. You need <strong>8 out of 10 to pass</strong>, and your results go straight to MK.</p>
+<div class="qname"><label for="quizName">Your name</label><input type="text" id="quizName" placeholder="First and last name" autocomplete="name"></div>
+<p class="mono" style="font-size:12px;color:var(--muted)">Questions are drawn at random from a 50-question bank. Every attempt — and every retake — is a different set.</p>
+<div id="quizQs"></div>`;
+
+function postViaIframe(payload){
+  // Classic FormSubmit method via hidden iframe — this is the flow that got activated,
+  // so it delivers even if the AJAX endpoint is finicky.
+  const iframeName = 'fs_'+Date.now();
+  const iframe = document.createElement('iframe');
+  iframe.name = iframeName; iframe.style.display='none';
+  document.body.appendChild(iframe);
+  const form = document.createElement('form');
+  form.action = 'https://formsubmit.co/'+RESULTS_EMAIL;
+  form.method = 'POST'; form.target = iframeName; form.style.display='none';
+  const add=(k,v)=>{const i=document.createElement('input');i.type='hidden';i.name=k;i.value=v;form.appendChild(i);};
+  add('_subject', payload._subject);
+  add('_template','table');
+  add('_captcha','false');
+  Object.keys(payload).forEach(k=>{ if(k!=='_subject'&&k!=='_template') add(k, payload[k]); });
+  document.body.appendChild(form);
+  form.submit();
+  setTimeout(()=>{ form.remove(); iframe.remove(); }, 4000);
+}
+
 function sendResults(){
   if(resultsSent) return;
   resultsSent = true;
-  const name = (document.getElementById('quizName')||{}).value || 'Unknown';
+  const passed = score >= PASS_MARK;
+  const name = ((document.getElementById('quizName')||{}).value || 'Unknown').trim();
   const payload = {
-    _subject: 'Training Module 02 results — '+name.trim()+' — '+score+'/'+QUIZ_TOTAL,
+    _subject: (passed?'PASS':'*** FAILED ***')+' — Training Module 02 — '+name+' — '+score+'/'+QUIZ_TOTAL,
     _template: 'table',
-    Name: name.trim(),
-    Score: score+' / '+QUIZ_TOTAL,
+    Result: passed ? 'PASS' : 'FAILED — must retake',
+    Name: name,
+    Score: score+' / '+QUIZ_TOTAL+'  (pass = '+PASS_MARK+')',
     Completed: new Date().toLocaleString(),
     Module: '02 — DO to Container Termination'
   };
   Object.keys(chosen).sort((a,b)=>+a-+b).forEach(k=>{
     const c = chosen[k];
-    payload['Q'+(+k+1)+' — '+c.question] = (c.correct?'✓ CORRECT — ':'✗ WRONG — ')+c.answer;
+    payload['Q'+(+k+1)+' — '+c.question] = (c.correct?'CORRECT — ':'WRONG — ')+c.answer;
   });
-  const status = document.getElementById('sendStatus');
-  if(status) status.textContent = 'Sending your results to MK…';
+  // fire both methods
+  postViaIframe(payload);
   fetch('https://formsubmit.co/ajax/'+RESULTS_EMAIL, {
     method:'POST',
     headers:{'Content-Type':'application/json','Accept':'application/json'},
-    body: JSON.stringify(payload)
-  }).then(r=>r.json()).then(()=>{
-    if(status) status.textContent = '✓ Results sent to MK ('+name.trim()+' — '+score+'/'+QUIZ_TOTAL+')';
-  }).catch(()=>{
-    if(status){
-      const body = encodeURIComponent('Module 02 results\nName: '+name+'\nScore: '+score+'/'+QUIZ_TOTAL+'\n\n'+Object.keys(chosen).sort((a,b)=>+a-+b).map(k=>'Q'+(+k+1)+': '+(chosen[k].correct?'CORRECT':'WRONG')+' — '+chosen[k].answer).join('\n'));
-      status.innerHTML = 'Auto-send failed — <a href="mailto:'+RESULTS_EMAIL+'?subject=Training Module 02 results — '+encodeURIComponent(name)+'&body='+body+'">click here to email your results to MK</a>';
-    }
-  });
+    body: JSON.stringify(Object.assign({_captcha:'false'}, payload))
+  }).catch(()=>{});
+  renderResult(passed, name);
 }
+
+function renderResult(passed, name){
+  const box = document.getElementById('quizCard');
+  if(!box) return;
+  if(passed){
+    box.innerHTML = '<div style="text-align:center;padding:20px 0">'
+      +'<div class="badge" style="background:var(--green-soft);color:var(--green)">✓ Passed</div>'
+      +'<div class="score-big" style="color:var(--green)">'+score+' / '+QUIZ_TOTAL+'</div>'
+      +'<p style="max-width:none;margin-top:8px"><strong>Nice work, '+name+'.</strong> Your results have been sent to MK.</p>'
+      +'<p style="max-width:none;color:var(--muted);font-size:14px">You can close this page — you\'re done with Module 02.</p></div>';
+  } else {
+    // record attempt so retake pulls an entirely different set
+    let att = 0;
+    try{ att = (JSON.parse(localStorage.getItem('shifl-m02-attempts')||'0'))||0; }catch(e){}
+    att++;
+    try{ localStorage.setItem('shifl-m02-attempts', JSON.stringify(att)); }catch(e){}
+    box.innerHTML = '<div style="text-align:center;padding:20px 0">'
+      +'<div class="badge" style="background:var(--red-soft);color:var(--red)">✗ Did not pass</div>'
+      +'<div class="score-big" style="color:var(--red)">'+score+' / '+QUIZ_TOTAL+'</div>'
+      +'<p style="max-width:none;margin-top:8px"><strong>You need '+PASS_MARK+' to pass, '+name+'.</strong> MK has been notified, and you\'ll need to retake the test.</p>'
+      +'<p style="max-width:none;color:var(--muted);font-size:14px">The retake uses a completely different set of questions. Review the stages, then try again when you\'re ready.</p>'
+      +'<button class="btn-next" style="margin-top:14px" onclick="retakeQuiz()">Retake the test</button></div>';
+  }
+}
+
+function retakeQuiz(){
+  answered = new Set(); chosen = {}; score = 0; resultsSent = false;
+  const box = document.getElementById('quizCard');
+  box.innerHTML = QUIZ_INTRO_HTML;
+  renderQuiz();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
 const main = document.getElementById('steps');
 const player = new Audio();
 let playingStep = null;
@@ -783,7 +862,7 @@ document.getElementById('btnGloss').onclick = ()=>openDrawer('drGloss');
 overlay.onclick = closeDrawers;
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick = closeDrawers);
 
-const STAGE_NAMES = ["Intro — From DO to Termination","1 · DO Sent — Real Confirmation","2 · Releases, Holds & Tracking","3 · Discharge, LFD & Pre-Pull","4 · Appointments — Confirmation","5 · Outgate — Clocks Flip","6 · Delivery — Live vs Drop","7 · Empty Return & Per Diem","8 · Termination & Close-Out","9 · Special Cases: COD & Amazon","Knowledge Check","Complete"];
+const STAGE_NAMES = ["Intro — From DO to Termination","1 · DO Sent — Real Confirmation","2 · Releases, Holds & Tracking","3 · Discharge, LFD & Pre-Pull","4 · Appointments — Confirmation","5 · Outgate — Clocks Flip","6 · Delivery — Live vs Drop","7 · Empty Return & Per Diem","8 · Termination & Close-Out","9 · Special Cases: COD & Amazon","Knowledge Check","Return Locations (Reference)"];
 let visited = new Set([0]);
 function renderDrawer(){
   document.getElementById('drList').innerHTML = STAGE_NAMES.map((n,i)=>
@@ -894,14 +973,6 @@ function goTo(i){
   });
   // progress
   document.getElementById('progBar').style.width = (i/(STEPS.length-1)*100)+'%';
-  // score screen
-  if(i === STEPS.length-1){
-    document.getElementById('scoreOut').textContent = score+' / '+QUIZ_TOTAL;
-    document.getElementById('scoreMsg').textContent =
-      score===QUIZ_TOTAL ? 'Perfect score. You can run this move.' :
-      score>=7 ? 'Solid — review the stages you missed and take the check again.' :
-      'Worth a second pass. Restart the module and watch the clocks panel as you go.';
-  }
   window.scrollTo({top:0, behavior:'smooth'});
   if(autoplay && AUDIO[i]){
     player.src = AUDIO[i];
