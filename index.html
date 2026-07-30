@@ -265,6 +265,24 @@ button:active{transform:scale(.98)}
 .gl-item b{font-family:'Barlow Condensed';font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink);display:block;font-size:15px}
 .gl-item span{font-size:14px;color:var(--steel)}
 
+.do-sample{margin:0 0 18px}
+.do-sample img{
+  width:100%;max-width:520px;display:block;
+  border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:0 4px 16px rgba(14,27,42,.1);cursor:zoom-in;
+}
+.do-sample figcaption{
+  font-family:'IBM Plex Mono';font-size:11px;color:var(--muted);
+  letter-spacing:.03em;margin-top:8px;
+}
+.lightbox{
+  position:fixed;inset:0;background:rgba(14,27,42,.88);z-index:400;
+  display:none;align-items:flex-start;justify-content:center;padding:24px;overflow:auto;cursor:zoom-out;
+}
+.lightbox.open{display:flex}
+.lightbox img{max-width:100%;width:auto;height:auto;border-radius:8px;box-shadow:0 12px 48px rgba(0,0,0,.5)}
+.lightbox .lb-x{position:fixed;top:16px;right:20px;background:none;border:none;color:#fff;font-size:30px;cursor:pointer;line-height:1}
+
 footer{max-width:960px;margin:0 auto;padding:0 24px 40px;font-family:'IBM Plex Mono';font-size:11px;color:var(--muted)}
 
 @media (max-width:640px){
@@ -348,6 +366,10 @@ const STEPS = [
 { pos:'4%', node:0, clocks:['idle','idle','idle'], html:`
 <div class="eyebrow">Stage 1 · Dispatch</div>
 <h1>DO Sent — Get a Real Confirmation</h1>
+<figure class="do-sample">
+  <img src="assets/sample-delivery-order.jpeg" alt="Sample Shifl Delivery Order" data-zoom>
+  <figcaption>This is what a Delivery Order looks like. Tap to enlarge — check every field before it goes out.</figcaption>
+</figure>
 <div class="card">
 <h2>Before it goes out</h2>
 <ul class="check">
@@ -854,6 +876,19 @@ document.addEventListener('click', e=>{
 });
 
 // ---- drawers ----
+// image lightbox
+const lb = document.createElement('div');
+lb.className = 'lightbox';
+lb.innerHTML = '<button class="lb-x" aria-label="Close">✕</button><img alt="Enlarged view">';
+document.body.appendChild(lb);
+const lbImg = lb.querySelector('img');
+document.addEventListener('click', e=>{
+  const z = e.target.closest('[data-zoom]');
+  if(z){ lbImg.src = z.src; lb.classList.add('open'); return; }
+  if(e.target === lb || e.target.closest('.lb-x')) lb.classList.remove('open');
+});
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') lb.classList.remove('open'); });
+
 const overlay = document.getElementById('overlay');
 function openDrawer(id){ document.getElementById(id).classList.add('open'); overlay.classList.add('open'); }
 function closeDrawers(){ document.querySelectorAll('.drawer').forEach(d=>d.classList.remove('open')); overlay.classList.remove('open'); }
