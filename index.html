@@ -183,6 +183,11 @@ button:active{transform:scale(.98)}
 .step-count{font-family:'IBM Plex Mono';font-size:12px;color:var(--muted)}
 
 /* quiz */
+.quiz-progress{font-size:12px;color:var(--muted);letter-spacing:.04em;margin-bottom:12px;text-transform:uppercase}
+.quiz-navrow{display:flex;justify-content:flex-end;margin-top:16px}
+.quiz-next{min-width:170px}
+.quiz-next:disabled{opacity:.4;cursor:not-allowed}
+
 .qname{margin:14px 0 22px}
 .qname label{display:block;font-family:'Barlow Condensed';font-weight:600;font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
 .qname input{width:100%;max-width:340px;font-family:'Barlow';font-size:16px;padding:11px 14px;border:1px solid var(--line);border-radius:8px;color:var(--ink);background:#fff}
@@ -569,7 +574,7 @@ const STEPS = [
 <div class="card" id="quizCard">
 <p>Ten questions. <strong>Enter your name first</strong> — your answers lock the instant you pick them. You need <strong>8 out of 10 to pass</strong>, and your results go straight to MK.</p>
 <div class="qname"><label for="quizName">Your name</label><input type="text" id="quizName" placeholder="First and last name" autocomplete="name"></div>
-<p class="mono" style="font-size:12px;color:var(--muted)">Questions are drawn at random from a 50-question bank. Every attempt — and every retake — is a different set.</p>
+<p class="mono" style="font-size:12px;color:var(--muted)">10 questions, one at a time, drawn at random from a 50-question bank — your set and answer order are unique to you. You can't change an answer once picked.</p>
 <div id="quizQs"></div>
 </div>`},
 
@@ -661,26 +666,47 @@ function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a
 function renderQuiz(){
   const wrap = document.getElementById('quizQs');
   if(!wrap) return;
-  const win = Math.floor(Date.now()/1800000); // 30-minute window
+  // Per-person seed: generated fresh each attempt, unique to this person's session.
+  // Two people taking it at the same moment get different questions, order, and answer layout.
+  if(!window.quizSeed) window.quizSeed = (Math.floor(Math.random()*0xFFFFFFFF) ^ (Date.now()>>>0)) >>> 0;
   let att = 0;
   try{ att = (JSON.parse(localStorage.getItem('shifl-m02-attempts')||'0'))||0; }catch(e){}
-  // Seed folds in the attempt count so each retake is a different, non-overlapping set.
-  // Shuffle the full bank once per 30-min window, then hand out consecutive
-  // non-overlapping blocks of 10 per attempt. 50 questions = 5 fully distinct
-  // sets before anything repeats, so a retake shares ZERO questions with the last.
+  // Shuffle the full bank with this person's seed, then hand out a non-overlapping
+  // block of 10 per attempt (50 questions = 5 distinct sets before anything repeats).
   const blocks = Math.floor(BANK.length / QUIZ_TOTAL);      // 5
-  const rng = mulberry32(win >>> 0);
+  const rng = mulberry32(window.quizSeed);
   const idx = BANK.map((_,i)=>i);
   for(let i=idx.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
   const block = att % blocks;
   const pick = idx.slice(block*QUIZ_TOTAL, block*QUIZ_TOTAL + QUIZ_TOTAL);
-  wrap.innerHTML = pick.map((b,pos)=>{
+  quizCards = pick.map((b,pos)=>{
     const item = BANK[b];
-    const phr = item.q[(win + att + b) % item.q.length];
+    const phr = item.q[(window.quizSeed + att + b) % item.q.length];
     const opts = item.opts.map((t,oi)=>({t,c:oi===0?'1':'0'}));
     for(let i=opts.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[opts[i],opts[j]]=[opts[j],opts[i]];}
     return '<div class="q" data-q="'+pos+'" data-fb="'+item.fb.replace(/"/g,'&quot;')+'"><div class="q-title">'+(pos+1)+'. '+phr+'</div>'+opts.map(o=>'<button class="opt" data-c="'+o.c+'">'+o.t+'</button>').join('')+'<div class="q-fb"></div></div>';
-  }).join('');
+  });
+  quizPos = 0;
+  showQuizCard();
+}
+
+let quizCards = [];
+let quizPos = 0;
+
+function showQuizCard(){
+  const wrap = document.getElementById('quizQs');
+  if(!wrap) return;
+  // Require a name before the first question shows
+  const nameEl = document.getElementById('quizName');
+  if(quizPos === 0 && answered.size === 0 && nameEl && !nameEl.value.trim()){
+    wrap.innerHTML = '<p class="mono" style="color:var(--red);font-size:13px">Enter your name above to begin.</p>';
+    return;
+  }
+  // Show only the current question, with a progress line and a Next control
+  const done = answered.size;
+  const progress = '<div class="quiz-progress mono">Question '+(quizPos+1)+' of '+QUIZ_TOTAL+' &nbsp;·&nbsp; answered '+done+'/'+QUIZ_TOTAL+'</div>';
+  wrap.innerHTML = progress + quizCards[quizPos] +
+    '<div class="quiz-navrow"><button class="btn-next quiz-next" id="quizNext" disabled>Next question</button></div>';
 }
 
 const AUDIO = {
@@ -753,7 +779,7 @@ const RESULTS_EMAIL = 'mk@shifl.com';
 const PASS_MARK = 8;
 const QUIZ_INTRO_HTML = `<p>Ten questions. <strong>Enter your name first</strong> — your answers lock the instant you pick them. You need <strong>8 out of 10 to pass</strong>, and your results go straight to MK.</p>
 <div class="qname"><label for="quizName">Your name</label><input type="text" id="quizName" placeholder="First and last name" autocomplete="name"></div>
-<p class="mono" style="font-size:12px;color:var(--muted)">Questions are drawn at random from a 50-question bank. Every attempt — and every retake — is a different set.</p>
+<p class="mono" style="font-size:12px;color:var(--muted)">10 questions, one at a time, drawn at random from a 50-question bank — your set and answer order are unique to you. You can't change an answer once picked.</p>
 <div id="quizQs"></div>`;
 
 function postViaIframe(payload){
@@ -830,11 +856,23 @@ function renderResult(passed, name){
 
 function retakeQuiz(){
   answered = new Set(); chosen = {}; score = 0; resultsSent = false;
+  quizPos = 0;
+  // keep window.quizSeed so the retake's block is a DIFFERENT non-overlapping set for this same person
   const box = document.getElementById('quizCard');
   box.innerHTML = QUIZ_INTRO_HTML;
   renderQuiz();
   window.scrollTo({top:0,behavior:'smooth'});
 }
+
+// Typing a name while the quiz is waiting reveals the first question
+document.addEventListener('input', e=>{
+  if(e.target && e.target.id === 'quizName'){
+    e.target.style.borderColor = '';
+    if(cur === STEPS.length-2 && answered.size === 0 && quizPos === 0 && e.target.value.trim()){
+      showQuizCard();
+    }
+  }
+});
 
 const main = document.getElementById('steps');
 const player = new Audio();
@@ -1019,7 +1057,7 @@ function navHTML(i){
 function goTo(i){
   stopAudio();
   closePop();
-  if(i===0){answered=new Set();chosen={};score=0;resultsSent=false;resetQuiz();resetChecks();}
+  if(i===0){answered=new Set();chosen={};score=0;resultsSent=false;quizPos=0;window.quizSeed=null;resetQuiz();resetChecks();}
   cur = i;
   if(i === STEPS.length-2 && answered.size === 0) renderQuiz();
   visited.add(i);
@@ -1091,7 +1129,23 @@ document.addEventListener('click', e=>{
     const fb = q.querySelector('.q-fb');
     fb.textContent = (good ? '✓ ' : '✗ ') + q.dataset.fb;
     fb.classList.add('show', good?'good':'bad');
-    if(answered.size === QUIZ_TOTAL) sendResults();
+    // enable the Next control now that this question is answered
+    const nextBtn = document.getElementById('quizNext');
+    if(nextBtn){
+      nextBtn.disabled = false;
+      nextBtn.textContent = (quizPos === QUIZ_TOTAL-1) ? 'Finish & submit' : 'Next question';
+    }
+  }
+  // advance to next question, or finish
+  if(e.target.closest('#quizNext') && !e.target.closest('#quizNext').disabled){
+    if(quizPos < QUIZ_TOTAL-1){
+      quizPos++;
+      showQuizCard();
+      const card = document.querySelector('#quizQs .q');
+      if(card) card.scrollIntoView({behavior:'smooth', block:'center'});
+    } else {
+      sendResults();
+    }
   }
 });
 
