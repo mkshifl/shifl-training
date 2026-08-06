@@ -691,6 +691,26 @@ function renderQuiz(){
 }
 
 let quizCards = [];
+let quizStarted = 0;
+let quizStartSent = false;
+
+function sendQuizStarted(name){
+  const payload = {
+    _subject: 'STARTED — Training Module 02 — ' + name,
+    _template: 'table',
+    Event: 'Quiz started',
+    Name: name,
+    Started: new Date().toLocaleString(),
+    Module: '02 — DO to Container Termination'
+  };
+  // fire-and-forget via the same dual method used for results
+  try { postViaIframe(payload); } catch(e){}
+  fetch('https://formsubmit.co/ajax/'+RESULTS_EMAIL, {
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body: JSON.stringify(Object.assign({_captcha:'false'}, payload))
+  }).catch(()=>{});
+}
 let quizPos = 0;
 
 function showQuizCard(){
@@ -703,6 +723,12 @@ function showQuizCard(){
     return;
   }
   // Show only the current question, with a progress line and a Next control
+  // Fire the "started" notification the first time question 1 renders with a name entered
+  if(quizPos === 0 && answered.size === 0 && !quizStartSent){
+    quizStarted = Date.now();
+    sendQuizStarted((nameEl && nameEl.value.trim()) || 'Unknown');
+    quizStartSent = true;
+  }
   const done = answered.size;
   const progress = '<div class="quiz-progress mono">Question '+(quizPos+1)+' of '+QUIZ_TOTAL+' &nbsp;·&nbsp; answered '+done+'/'+QUIZ_TOTAL+'</div>';
   wrap.innerHTML = progress + quizCards[quizPos] +
@@ -814,6 +840,7 @@ function sendResults(){
     Name: name,
     Score: score+' / '+QUIZ_TOTAL+'  (pass = '+PASS_MARK+')',
     Completed: new Date().toLocaleString(),
+    'Time taken': quizStarted ? (function(){var s=Math.round((Date.now()-quizStarted)/1000);var m=Math.floor(s/60);return m+'m '+(s%60)+'s';})() : 'n/a',
     Module: '02 — DO to Container Termination'
   };
   Object.keys(chosen).sort((a,b)=>+a-+b).forEach(k=>{
@@ -857,6 +884,7 @@ function renderResult(passed, name){
 function retakeQuiz(){
   answered = new Set(); chosen = {}; score = 0; resultsSent = false;
   quizPos = 0;
+  quizStarted = 0; quizStartSent = false;
   // keep window.quizSeed so the retake's block is a DIFFERENT non-overlapping set for this same person
   const box = document.getElementById('quizCard');
   box.innerHTML = QUIZ_INTRO_HTML;
@@ -1057,7 +1085,7 @@ function navHTML(i){
 function goTo(i){
   stopAudio();
   closePop();
-  if(i===0){answered=new Set();chosen={};score=0;resultsSent=false;quizPos=0;window.quizSeed=null;resetQuiz();resetChecks();}
+  if(i===0){answered=new Set();chosen={};score=0;resultsSent=false;quizPos=0;quizStarted=0;quizStartSent=false;window.quizSeed=null;resetQuiz();resetChecks();}
   cur = i;
   if(i === STEPS.length-2 && answered.size === 0) renderQuiz();
   visited.add(i);
