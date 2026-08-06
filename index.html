@@ -572,7 +572,7 @@ const STEPS = [
 <div class="eyebrow">Final Stage · Knowledge Check</div>
 <h1>Prove It</h1>
 <div class="card" id="quizCard">
-<p>Ten questions. <strong>Enter your name first</strong> — your answers lock the instant you pick them. You need <strong>8 out of 10 to pass</strong>, and your results go straight to MK.</p>
+<p>Ten questions. <strong>Enter your name first</strong> — your answers lock the instant you pick them, and your results go straight to MK.</p>
 <div class="qname"><label for="quizName">Your name</label><input type="text" id="quizName" placeholder="First and last name" autocomplete="name"></div>
 <p class="mono" style="font-size:12px;color:var(--muted)">10 questions, one at a time, drawn at random from a 50-question bank — your set and answer order are unique to you. You can't change an answer once picked.</p>
 <div id="quizQs"></div>
@@ -803,7 +803,7 @@ const QUIZ_TOTAL = 10;
 const RESULTS_EMAIL = 'mk@shifl.com';
 
 const PASS_MARK = 8;
-const QUIZ_INTRO_HTML = `<p>Ten questions. <strong>Enter your name first</strong> — your answers lock the instant you pick them. You need <strong>8 out of 10 to pass</strong>, and your results go straight to MK.</p>
+const QUIZ_INTRO_HTML = `<p>Ten questions. <strong>Enter your name first</strong> — your answers lock the instant you pick them, and your results go straight to MK.</p>
 <div class="qname"><label for="quizName">Your name</label><input type="text" id="quizName" placeholder="First and last name" autocomplete="name"></div>
 <p class="mono" style="font-size:12px;color:var(--muted)">10 questions, one at a time, drawn at random from a 50-question bank — your set and answer order are unique to you. You can't change an answer once picked.</p>
 <div id="quizQs"></div>`;
@@ -863,7 +863,7 @@ function renderResult(passed, name){
   if(passed){
     box.innerHTML = '<div style="text-align:center;padding:20px 0">'
       +'<div class="badge" style="background:var(--green-soft);color:var(--green)">✓ Passed</div>'
-      +'<div class="score-big" style="color:var(--green)">'+score+' / '+QUIZ_TOTAL+'</div>'
+      +'<div class="score-big" style="color:var(--green)">Passed</div>'
       +'<p style="max-width:none;margin-top:8px"><strong>Nice work, '+name+'.</strong> Your results have been sent to MK.</p>'
       +'<p style="max-width:none;color:var(--muted);font-size:14px">You can close this page — you\'re done with Module 02.</p></div>';
   } else {
@@ -874,8 +874,8 @@ function renderResult(passed, name){
     try{ localStorage.setItem('shifl-m02-attempts', JSON.stringify(att)); }catch(e){}
     box.innerHTML = '<div style="text-align:center;padding:20px 0">'
       +'<div class="badge" style="background:var(--red-soft);color:var(--red)">✗ Did not pass</div>'
-      +'<div class="score-big" style="color:var(--red)">'+score+' / '+QUIZ_TOTAL+'</div>'
-      +'<p style="max-width:none;margin-top:8px"><strong>You need '+PASS_MARK+' to pass, '+name+'.</strong> MK has been notified, and you\'ll need to retake the test.</p>'
+      +'<div class="score-big" style="color:var(--red)">Not passed</div>'
+      +'<p style="max-width:none;margin-top:8px"><strong>Not quite there, '+name+'.</strong> MK has been notified, and you\'ll need to retake the test.</p>'
       +'<p style="max-width:none;color:var(--muted);font-size:14px">The retake uses a completely different set of questions. Review the stages, then try again when you\'re ready.</p>'
       +'<button class="btn-next" style="margin-top:14px" onclick="retakeQuiz()">Retake the test</button></div>';
   }
